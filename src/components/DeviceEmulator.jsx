@@ -36,23 +36,20 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction, theme }) => {
     }
   }, [theme]);
 
-  const aspectRatio = (device.height / device.width) * 100;
-  const maxWidth = Math.min(device.width, 400); // Limita el ancho máximo a 400px
-
   return (
-    <div className="bg-white dark:bg-gray-700 rounded-lg shadow-md overflow-hidden" style={{ width: `${maxWidth}px` }}>
+    <div className="bg-white dark:bg-gray-700 rounded-lg shadow-md overflow-hidden flex-shrink-0 m-2" style={{ width: `${device.width}px` }}>
       <div className="bg-gray-100 dark:bg-gray-600 p-2 text-sm font-medium flex justify-between items-center">
         <span>{device.name}</span>
         <button onClick={() => onRemove(device)} className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
           <X size={18} />
         </button>
       </div>
-      <div className="relative" style={{ paddingTop: `${aspectRatio}%` }}>
+      <div style={{ height: `${device.height}px` }}>
         <iframe
           ref={iframeRef}
           src={url}
           title={`Preview on ${device.name}`}
-          className="absolute top-0 left-0 w-full h-full border-0"
+          className="w-full h-full border-0"
         />
       </div>
     </div>
