@@ -10,18 +10,31 @@ import { useTheme } from 'next-themes';
 
 const Index = () => {
   const [url, setUrl] = useState('https://example.com');
-  const [selectedDevice, setSelectedDevice] = useState(devices[0]);
+  const [selectedDevices, setSelectedDevices] = useState([]);
   const [category, setCategory] = useState('all');
+  const [brand, setBrand] = useState('all');
   const { theme, setTheme } = useTheme();
 
   const handleUrlChange = (e) => setUrl(e.target.value);
-  const handleDeviceChange = (device) => setSelectedDevice(device);
+  const handleDeviceChange = (device) => {
+    setSelectedDevices(prev => {
+      const isSelected = prev.some(d => d.name === device.name);
+      if (isSelected) {
+        return prev.filter(d => d.name !== device.name);
+      } else {
+        return [...prev, device];
+      }
+    });
+  };
   const handleCategoryChange = (newCategory) => setCategory(newCategory);
+  const handleBrandChange = (newBrand) => setBrand(newBrand);
 
   const filteredDevices = useMemo(() => {
-    if (category === 'all') return devices;
-    return devices.filter(device => device.category === category);
-  }, [category]);
+    return devices.filter(device => 
+      (category === 'all' || device.category === category) &&
+      (brand === 'all' || device.brand === brand)
+    );
+  }, [category, brand]);
 
   return (
     <div className="container mx-auto p-4 min-h-screen bg-background text-foreground">
@@ -46,15 +59,24 @@ const Index = () => {
         />
         <Button onClick={() => setUrl(url)}>Cargar</Button>
       </div>
-      <div className="flex flex-col lg:flex-row gap-8">
-        <DeviceSelector
-          devices={filteredDevices}
-          selectedDevice={selectedDevice}
-          onSelectDevice={handleDeviceChange}
-          category={category}
-          onCategoryChange={handleCategoryChange}
-        />
-        <DeviceEmulator url={url} device={selectedDevice} />
+      <DeviceSelector
+        devices={filteredDevices}
+        selectedDevices={selectedDevices}
+        onSelectDevice={handleDeviceChange}
+        category={category}
+        onCategoryChange={handleCategoryChange}
+        brand={brand}
+        onBrandChange={handleBrandChange}
+      />
+      <div className="mt-8">
+        {selectedDevices.map(device => (
+          <DeviceEmulator 
+            key={device.name} 
+            url={url} 
+            device={device} 
+            onRemove={handleDeviceChange}
+          />
+        ))}
       </div>
     </div>
   );

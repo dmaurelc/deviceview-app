@@ -1,13 +1,16 @@
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 
-const DeviceEmulator = ({ url, device }) => {
+const DeviceEmulator = ({ url, device, onRemove }) => {
   return (
-    <Card className="flex-grow">
-      <CardHeader>
-        <CardTitle>{device.name} - {device.width}x{device.height}</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <Card className="mb-4">
+      <CardContent className="p-4">
+        <div className="flex justify-between items-center mb-2">
+          <h3 className="text-lg font-semibold">{device.name} - {device.width}x{device.height}</h3>
+          <button onClick={() => onRemove(device)} className="text-red-500 hover:text-red-700">
+            Quitar
+          </button>
+        </div>
         <div
           className="border-4 border-primary rounded-lg overflow-hidden mx-auto"
           style={{
