@@ -27,23 +27,32 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction }) => {
   useEffect(() => {
     const iframe = iframeRef.current;
     if (iframe) {
-      iframe.onload = () => {
+      const handleLoad = () => {
         iframe.contentWindow.postMessage({ type: 'INIT_LISTENERS' }, '*');
+      };
+      iframe.addEventListener('load', handleLoad);
+      return () => {
+        iframe.removeEventListener('load', handleLoad);
       };
     }
   }, []);
 
   useEffect(() => {
-    if (containerRef.current) {
+    const container = containerRef.current;
+    if (container) {
       const handleZoom = (event) => {
         if (event.ctrlKey) {
           event.preventDefault();
-          const newZoom = Math.min(Math.max(0.5, containerRef.current.style.zoom * (event.deltaY > 0 ? 0.9 : 1.1)), 2);
+          const newZoom = Math.min(Math.max(0.5, container.style.zoom * (event.deltaY > 0 ? 0.9 : 1.1)), 2);
           syncAction({ zoom: newZoom });
         }
       };
-      containerRef.current.addEventListener('wheel', handleZoom);
-      return () => containerRef.current.removeEventListener('wheel', handleZoom);
+      container.addEventListener('wheel', handleZoom);
+      return () => {
+        if (container) {
+          container.removeEventListener('wheel', handleZoom);
+        }
+      };
     }
   }, [syncAction]);
 
