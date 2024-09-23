@@ -53,6 +53,15 @@
       document.documentElement.classList.remove('dark');
     }
     currentTheme = theme;
+
+    // Forzar la actualización del tema en el contenido del iframe
+    const meta = document.createElement('meta');
+    meta.name = 'color-scheme';
+    meta.content = theme;
+    document.head.appendChild(meta);
+
+    // Disparar un evento personalizado para notificar el cambio de tema
+    window.dispatchEvent(new CustomEvent('themechange', { detail: { theme } }));
   }
 
   window.addEventListener('message', function(event) {
