@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useCallback } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
+import { X } from 'lucide-react';
 
 const DeviceEmulator = ({ url, device, onRemove, syncAction }) => {
   const containerRef = useRef(null);
@@ -52,7 +53,7 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction }) => {
         <div className="flex justify-between items-center mb-2">
           <h3 className="text-lg font-semibold">{device.name} - {device.width}x{device.height}</h3>
           <button onClick={() => onRemove(device)} className="text-red-500 hover:text-red-700">
-            Quitar
+            <X size={20} />
           </button>
         </div>
         <div
@@ -64,7 +65,7 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction }) => {
             maxWidth: '100%',
             maxHeight: '70vh',
             transform: 'scale(0.8)',
-            transformOrigin: 'top left',
+            transformOrigin: 'top center',
           }}
         >
           <iframe

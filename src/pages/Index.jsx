@@ -10,7 +10,7 @@ import { useTheme } from 'next-themes';
 import useSyncedDevices from '../hooks/useSyncedDevices';
 
 const Index = () => {
-  const [url, setUrl] = useState('https://example.com');
+  const [url, setUrl] = useState('https://tailwindui.com/');
   const [selectedDevices, setSelectedDevices] = useState([]);
   const [category, setCategory] = useState('all');
   const [brand, setBrand] = useState('all');
@@ -35,50 +35,64 @@ const Index = () => {
   }, [category, brand]);
 
   return (
-    <div className="container mx-auto p-4 min-h-screen bg-background text-foreground">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">Emulador de Dispositivos</h1>
-        <div className="flex items-center space-x-2">
-          <Switch
-            id="dark-mode"
-            checked={theme === 'dark'}
-            onCheckedChange={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-          />
-          <Label htmlFor="dark-mode">Modo Oscuro</Label>
-        </div>
-      </div>
-      <div className="flex gap-4 mb-4">
-        <Input
-          type="url"
-          placeholder="Ingrese URL para previsualizar"
-          value={url}
-          onChange={handleUrlChange}
-          className="flex-grow"
-        />
-        <Button onClick={() => setUrl(url)}>Cargar</Button>
-      </div>
-      <DeviceSelector
-        devices={filteredDevices}
-        selectedDevices={selectedDevices}
-        onSelectDevice={handleDeviceChange}
-        category={category}
-        onCategoryChange={handleCategoryChange}
-        brand={brand}
-        onBrandChange={handleBrandChange}
-      />
-      <div className="mt-8 overflow-x-auto">
-        <div className="flex space-x-4 pb-4">
-          {selectedDevices.map(device => (
-            <DeviceEmulator 
-              key={device.name} 
-              url={url} 
-              device={device} 
-              onRemove={handleDeviceChange}
-              iframeRef={(el) => iframeRefs.current[device.name] = el}
-              syncAction={syncAction}
-            />
-          ))}
-        </div>
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
+      <div className="py-10">
+        <header>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h1 className="text-3xl font-bold leading-tight text-gray-900 dark:text-white">Emulador de Dispositivos</h1>
+          </div>
+        </header>
+        <main>
+          <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div className="px-4 py-8 sm:px-0">
+              <div className="border-4 border-dashed border-gray-200 rounded-lg p-4">
+                <div className="flex justify-between items-center mb-4">
+                  <div className="flex-grow mr-4">
+                    <Input
+                      type="url"
+                      placeholder="Ingrese URL para previsualizar"
+                      value={url}
+                      onChange={handleUrlChange}
+                      className="w-full"
+                    />
+                  </div>
+                  <Button onClick={() => setUrl(url)}>Cargar</Button>
+                  <div className="flex items-center ml-4">
+                    <Switch
+                      id="dark-mode"
+                      checked={theme === 'dark'}
+                      onCheckedChange={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                    />
+                    <Label htmlFor="dark-mode" className="ml-2">Modo Oscuro</Label>
+                  </div>
+                </div>
+                <DeviceSelector
+                  devices={filteredDevices}
+                  selectedDevices={selectedDevices}
+                  onSelectDevice={handleDeviceChange}
+                  category={category}
+                  onCategoryChange={handleCategoryChange}
+                  brand={brand}
+                  onBrandChange={handleBrandChange}
+                />
+                <div className="mt-8 overflow-x-auto">
+                  <div className="flex justify-center space-x-4 pb-4">
+                    {selectedDevices.map(device => (
+                      <DeviceEmulator 
+                        key={device.name} 
+                        url={url} 
+                        device={device} 
+                        onRemove={handleDeviceChange}
+                        iframeRef={(el) => iframeRefs.current[device.name] = el}
+                        syncAction={syncAction}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
       </div>
     </div>
   );

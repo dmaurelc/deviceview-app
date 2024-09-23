@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { brands, categories } from '../utils/devices';
+import { getBrandIcon } from '../utils/brandIcons';
 
 const DeviceSelector = ({ devices, selectedDevices, onSelectDevice, category, onCategoryChange, brand, onBrandChange }) => {
   return (
@@ -20,9 +21,17 @@ const DeviceSelector = ({ devices, selectedDevices, onSelectDevice, category, on
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Todas</SelectItem>
-                {brands.map((brand) => (
-                  <SelectItem key={brand} value={brand}>{brand}</SelectItem>
-                ))}
+                {brands.map((brand) => {
+                  const BrandIcon = getBrandIcon(brand);
+                  return (
+                    <SelectItem key={brand} value={brand}>
+                      <div className="flex items-center">
+                        <BrandIcon className="mr-2 h-4 w-4" />
+                        {brand}
+                      </div>
+                    </SelectItem>
+                  );
+                })}
               </SelectContent>
             </Select>
           </div>
@@ -42,16 +51,20 @@ const DeviceSelector = ({ devices, selectedDevices, onSelectDevice, category, on
           </div>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
-          {devices.map((device) => (
-            <Button
-              key={device.name}
-              variant={selectedDevices.some(d => d.name === device.name) ? "default" : "outline"}
-              className="w-full justify-start text-left text-xs"
-              onClick={() => onSelectDevice(device)}
-            >
-              {device.name}
-            </Button>
-          ))}
+          {devices.map((device) => {
+            const DeviceIcon = getBrandIcon(device.brand);
+            return (
+              <Button
+                key={device.name}
+                variant={selectedDevices.some(d => d.name === device.name) ? "default" : "outline"}
+                className="w-full justify-start text-left text-xs"
+                onClick={() => onSelectDevice(device)}
+              >
+                <DeviceIcon className="mr-2 h-4 w-4" />
+                {device.name}
+              </Button>
+            );
+          })}
         </div>
       </CardContent>
     </Card>
