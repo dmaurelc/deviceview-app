@@ -10,7 +10,7 @@ import { useTheme } from 'next-themes';
 import useSyncedDevices from '../hooks/useSyncedDevices';
 
 const Index = () => {
-  const [url, setUrl] = useState('https://tailwindui.com/');
+  const [url, setUrl] = useState('https://tailwindcss.com');
   const [selectedDevices, setSelectedDevices] = useState([]);
   const [category, setCategory] = useState('all');
   const [brand, setBrand] = useState('all');
@@ -76,7 +76,7 @@ const Index = () => {
                   onBrandChange={handleBrandChange}
                 />
                 <div className="mt-8 overflow-x-auto">
-                  <div className="flex justify-center space-x-4 pb-4">
+                  <div className="flex flex-wrap justify-center">
                     {selectedDevices.map(device => (
                       <DeviceEmulator 
                         key={device.name} 

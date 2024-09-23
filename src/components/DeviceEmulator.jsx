@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useCallback } from 'react';
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { X } from 'lucide-react';
 
 const DeviceEmulator = ({ url, device, onRemove, syncAction }) => {
@@ -49,46 +49,35 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction }) => {
       };
       container.addEventListener('wheel', handleZoom);
       return () => {
-        if (container) {
-          container.removeEventListener('wheel', handleZoom);
-        }
+        container.removeEventListener('wheel', handleZoom);
       };
     }
   }, [syncAction]);
 
   return (
-    <Card className="mb-4 flex-shrink-0">
-      <CardContent className="p-4">
-        <div className="flex justify-between items-center mb-2">
-          <h3 className="text-lg font-semibold">{device.name} - {device.width}x{device.height}</h3>
-          <button onClick={() => onRemove(device)} className="text-red-500 hover:text-red-700">
-            <X size={20} />
-          </button>
-        </div>
-        <div
-          ref={containerRef}
-          className="border-4 border-primary rounded-lg overflow-hidden mx-auto"
+    <Card className="relative overflow-hidden m-2" style={{ width: `${device.width * 0.5}px`, height: `${device.height * 0.5}px` }}>
+      <button onClick={() => onRemove(device)} className="absolute top-1 right-1 text-gray-500 hover:text-gray-700 z-10">
+        <X size={16} />
+      </button>
+      <div
+        ref={containerRef}
+        className="w-full h-full overflow-hidden"
+        style={{
+          transform: 'scale(0.5)',
+          transformOrigin: 'top left',
+        }}
+      >
+        <iframe
+          ref={iframeRef}
+          src={url}
+          title={`Preview on ${device.name}`}
+          className="w-full h-full border-0"
           style={{
             width: `${device.width}px`,
             height: `${device.height}px`,
-            maxWidth: '100%',
-            maxHeight: '70vh',
-            transform: 'scale(0.8)',
-            transformOrigin: 'top center',
           }}
-        >
-          <iframe
-            ref={iframeRef}
-            src={url}
-            title={`Preview on ${device.name}`}
-            className="w-full h-full"
-            style={{
-              width: `${device.width}px`,
-              height: `${device.height}px`,
-            }}
-          />
-        </div>
-      </CardContent>
+        />
+      </div>
     </Card>
   );
 };
