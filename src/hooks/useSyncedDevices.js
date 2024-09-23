@@ -1,25 +1,14 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 
 const useSyncedDevices = (selectedDevices) => {
-  const [syncOptions, setSyncOptions] = useState({
-    scrolling: true,
-    navigation: true,
-    clicks: false,
-    inputs: false,
-  });
-
   const [syncedState, setSyncedState] = useState({
     scroll: { x: 0, y: 0 },
-    url: '',
-    inputValues: {},
+    zoom: 1,
   });
-
   const iframeRefs = useRef({});
 
   const syncAction = useCallback((action, sourceDevice) => {
-    if (!syncOptions[action.type]) return;
-
-    setSyncedState(prevState => ({ ...prevState, ...action.payload }));
+    setSyncedState(prevState => ({ ...prevState, ...action }));
     selectedDevices.forEach(device => {
       if (device.name !== sourceDevice && iframeRefs.current[device.name]) {
         iframeRefs.current[device.name].contentWindow.postMessage({
@@ -28,16 +17,7 @@ const useSyncedDevices = (selectedDevices) => {
         }, '*');
       }
     });
-  }, [selectedDevices, syncOptions]);
-
-  const toggleSyncOption = useCallback((option, value) => {
-    setSyncOptions(prev => {
-      if (option === 'all') {
-        return Object.fromEntries(Object.keys(prev).map(key => [key, value]));
-      }
-      return { ...prev, [option]: value };
-    });
-  }, []);
+  }, [selectedDevices]);
 
   useEffect(() => {
     const handleMessage = (event) => {
@@ -50,7 +30,7 @@ const useSyncedDevices = (selectedDevices) => {
     return () => window.removeEventListener('message', handleMessage);
   }, [syncAction]);
 
-  return { syncedState, syncAction, iframeRefs, syncOptions, toggleSyncOption };
+  return { syncedState, syncAction, iframeRefs };
 };
 
 export default useSyncedDevices;

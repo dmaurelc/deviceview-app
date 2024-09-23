@@ -1,12 +1,6 @@
 (function() {
   let lastScrollPosition = { x: 0, y: 0 };
   let scrollTimeout;
-  let syncOptions = {
-    scrolling: true,
-    navigation: true,
-    clicks: false,
-    inputs: false,
-  };
 
   function throttle(func, delay) {
     let lastCall = 0;
@@ -21,7 +15,6 @@
   }
 
   function handleScroll() {
-    if (!syncOptions.scrolling) return;
     const newPosition = { x: window.scrollX, y: window.scrollY };
     if (newPosition.x !== lastScrollPosition.x || newPosition.y !== lastScrollPosition.y) {
       lastScrollPosition = newPosition;
@@ -29,73 +22,41 @@
       scrollTimeout = setTimeout(() => {
         window.parent.postMessage({
           type: 'DEVICE_ACTION',
-          payload: { type: 'scrolling', payload: { scroll: newPosition } }
+          payload: { scroll: newPosition }
         }, '*');
       }, 100);
     }
   }
 
-  function handleNavigation() {
-    if (!syncOptions.navigation) return;
-    window.parent.postMessage({
-      type: 'DEVICE_ACTION',
-      payload: { type: 'navigation', payload: { url: window.location.href } }
-    }, '*');
-  }
-
-  function handleClick(e) {
-    if (!syncOptions.clicks) return;
-    window.parent.postMessage({
-      type: 'DEVICE_ACTION',
-      payload: { type: 'clicks', payload: { click: { x: e.clientX, y: e.clientY } } }
-    }, '*');
-  }
-
-  function handleInput(e) {
-    if (!syncOptions.inputs) return;
-    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+  function handleZoom(e) {
+    if (e.ctrlKey) {
+      e.preventDefault();
       window.parent.postMessage({
         type: 'DEVICE_ACTION',
-        payload: { type: 'inputs', payload: { input: { id: e.target.id, value: e.target.value } } }
+        payload: { zoom: e.deltaY > 0 ? 'zoom-out' : 'zoom-in' }
       }, '*');
     }
   }
 
+  function handleClick(e) {
+    window.parent.postMessage({
+      type: 'DEVICE_ACTION',
+      payload: { click: { x: e.clientX, y: e.clientY } }
+    }, '*');
+  }
+
   window.addEventListener('message', function(event) {
     if (event.data.type === 'INIT_LISTENERS') {
-      syncOptions = event.data.syncOptions;
       window.addEventListener('scroll', throttle(handleScroll, 100));
+      window.addEventListener('wheel', handleZoom);
       window.addEventListener('click', handleClick);
-      window.addEventListener('input', handleInput);
-      window.addEventListener('popstate', handleNavigation);
     } else if (event.data.type === 'SYNC_ACTION') {
-      const { type, payload } = event.data.payload;
-      switch (type) {
-        case 'scrolling':
-          window.scrollTo(payload.scroll.x, payload.scroll.y);
-          break;
-        case 'navigation':
-          if (window.location.href !== payload.url) {
-            window.location.href = payload.url;
-          }
-          break;
-        case 'clicks':
-          const clickEvent = new MouseEvent('click', {
-            view: window,
-            bubbles: true,
-            cancelable: true,
-            clientX: payload.click.x,
-            clientY: payload.click.y
-          });
-          document.elementFromPoint(payload.click.x, payload.click.y).dispatchEvent(clickEvent);
-          break;
-        case 'inputs':
-          const inputElement = document.getElementById(payload.input.id);
-          if (inputElement) {
-            inputElement.value = payload.input.value;
-            inputElement.dispatchEvent(new Event('input', { bubbles: true }));
-          }
-          break;
+      const { scroll, zoom } = event.data.payload;
+      if (scroll) {
+        window.scrollTo(scroll.x, scroll.y);
+      }
+      if (zoom) {
+        // Implementar lógica de zoom si es necesario
       }
     }
   });
