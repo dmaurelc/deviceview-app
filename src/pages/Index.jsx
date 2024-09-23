@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -17,19 +17,15 @@ const Index = () => {
   const { theme, setTheme } = useTheme();
   const { syncedState, syncAction, iframeRefs } = useSyncedDevices(selectedDevices);
 
-  const handleUrlChange = (e) => setUrl(e.target.value);
-  const handleDeviceChange = (device) => {
+  const handleUrlChange = useCallback((e) => setUrl(e.target.value), []);
+  const handleDeviceChange = useCallback((device) => {
     setSelectedDevices(prev => {
       const isSelected = prev.some(d => d.name === device.name);
-      if (isSelected) {
-        return prev.filter(d => d.name !== device.name);
-      } else {
-        return [...prev, device];
-      }
+      return isSelected ? prev.filter(d => d.name !== device.name) : [...prev, device];
     });
-  };
-  const handleCategoryChange = (newCategory) => setCategory(newCategory);
-  const handleBrandChange = (newBrand) => setBrand(newBrand);
+  }, []);
+  const handleCategoryChange = useCallback((newCategory) => setCategory(newCategory), []);
+  const handleBrandChange = useCallback((newBrand) => setBrand(newBrand), []);
 
   const filteredDevices = useMemo(() => {
     return devices.filter(device => 

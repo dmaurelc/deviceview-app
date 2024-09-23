@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 
 const useSyncedDevices = (selectedDevices) => {
   const [syncedState, setSyncedState] = useState({
@@ -6,6 +6,11 @@ const useSyncedDevices = (selectedDevices) => {
     zoom: 1,
   });
   const iframeRefs = useRef({});
+
+  const syncAction = useCallback((action) => {
+    setSyncedState(prevState => ({ ...prevState, ...action }));
+    window.postMessage({ type: 'SYNC_ACTION', payload: action }, '*');
+  }, []);
 
   useEffect(() => {
     const handleMessage = (event) => {
@@ -25,11 +30,6 @@ const useSyncedDevices = (selectedDevices) => {
     window.addEventListener('message', handleMessage);
     return () => window.removeEventListener('message', handleMessage);
   }, []);
-
-  const syncAction = (action) => {
-    setSyncedState(prevState => ({ ...prevState, ...action }));
-    window.postMessage({ type: 'SYNC_ACTION', payload: action }, '*');
-  };
 
   return { syncedState, syncAction, iframeRefs };
 };

@@ -1,11 +1,28 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 
 const DeviceEmulator = ({ url, device, onRemove, iframeRef, syncAction }) => {
   const containerRef = useRef(null);
 
+  const handleScroll = useCallback((event) => {
+    syncAction({
+      scroll: {
+        x: event.target.scrollingElement.scrollLeft,
+        y: event.target.scrollingElement.scrollTop,
+      },
+    });
+  }, [syncAction]);
+
+  const handleZoom = useCallback((event) => {
+    if (event.ctrlKey) {
+      event.preventDefault();
+      const newZoom = Math.min(Math.max(0.5, containerRef.current.style.zoom * (event.deltaY > 0 ? 0.9 : 1.1)), 2);
+      syncAction({ zoom: newZoom });
+    }
+  }, [syncAction]);
+
   useEffect(() => {
-    const iframe = iframeRef.current;
+    const iframe = iframeRef;
     if (iframe) {
       const handleIframeLoad = () => {
         iframe.contentWindow.addEventListener('scroll', handleScroll);
@@ -22,16 +39,16 @@ const DeviceEmulator = ({ url, device, onRemove, iframeRef, syncAction }) => {
         }
       };
     }
-  }, [iframeRef, syncAction]);
+  }, [iframeRef, handleScroll, handleZoom]);
 
   useEffect(() => {
     const handleSyncState = (event) => {
       if (event.data.type === 'SYNC_STATE') {
         const { scroll, zoom } = event.data.payload;
-        if (scroll) {
+        if (scroll && iframeRef.current) {
           iframeRef.current.contentWindow.scrollTo(scroll.x, scroll.y);
         }
-        if (zoom) {
+        if (zoom && containerRef.current) {
           containerRef.current.style.zoom = zoom;
         }
       }
@@ -40,23 +57,6 @@ const DeviceEmulator = ({ url, device, onRemove, iframeRef, syncAction }) => {
     window.addEventListener('message', handleSyncState);
     return () => window.removeEventListener('message', handleSyncState);
   }, [iframeRef]);
-
-  const handleScroll = (event) => {
-    syncAction({
-      scroll: {
-        x: event.target.scrollingElement.scrollLeft,
-        y: event.target.scrollingElement.scrollTop,
-      },
-    });
-  };
-
-  const handleZoom = (event) => {
-    if (event.ctrlKey) {
-      event.preventDefault();
-      const newZoom = Math.min(Math.max(0.5, containerRef.current.style.zoom * (event.deltaY > 0 ? 0.9 : 1.1)), 2);
-      syncAction({ zoom: newZoom });
-    }
-  };
 
   return (
     <Card className="mb-4 flex-shrink-0">
