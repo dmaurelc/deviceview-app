@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Input, Button, Container, Grid, Text } from "@nextui-org/react";
+import { Input, Button } from "@nextui-org/react";
 import DeviceEmulator from '../components/DeviceEmulator';
 import DeviceSelector from '../components/DeviceSelector';
 import { devices } from '../utils/devices';
@@ -19,26 +19,26 @@ const Index = () => {
   }, [category]);
 
   return (
-    <Container fluid className="py-8">
-      <Text h1 className="text-center mb-8">Emulador de Dispositivos</Text>
-      <Grid.Container gap={2} justify="center">
-        <Grid xs={12} md={8}>
+    <div className="container mx-auto py-8 px-4">
+      <h1 className="text-3xl font-bold text-center mb-8">Emulador de Dispositivos</h1>
+      <div className="flex flex-col items-center mb-8">
+        <div className="w-full max-w-2xl">
           <Input
             type="url"
             placeholder="Ingrese URL para previsualizar"
             value={url}
             onChange={handleUrlChange}
-            width="100%"
+            className="w-full"
             contentRight={
               <Button auto onClick={() => setUrl(url)}>
                 Cargar
               </Button>
             }
           />
-        </Grid>
-      </Grid.Container>
-      <Grid.Container gap={4} className="mt-8">
-        <Grid xs={12} md={3}>
+        </div>
+      </div>
+      <div className="flex flex-col md:flex-row gap-8">
+        <div className="w-full md:w-1/4">
           <DeviceSelector
             devices={filteredDevices}
             selectedDevice={selectedDevice}
@@ -46,12 +46,12 @@ const Index = () => {
             category={category}
             onCategoryChange={handleCategoryChange}
           />
-        </Grid>
-        <Grid xs={12} md={9}>
+        </div>
+        <div className="w-full md:w-3/4">
           <DeviceEmulator url={url} device={selectedDevice} />
-        </Grid>
-      </Grid.Container>
-    </Container>
+        </div>
+      </div>
+    </div>
   );
 };
 
