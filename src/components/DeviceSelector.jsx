@@ -7,9 +7,9 @@ import { getBrandIcon } from '../utils/brandIcons';
 const DeviceSelector = ({ devices, selectedDevices, onSelectDevice, category, onCategoryChange, brand, onBrandChange }) => {
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap gap-4">
+      <div className="flex flex-wrap gap-2">
         <Select value={brand} onValueChange={onBrandChange}>
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-[140px]">
             <SelectValue placeholder="Brand" />
           </SelectTrigger>
           <SelectContent>
@@ -19,7 +19,7 @@ const DeviceSelector = ({ devices, selectedDevices, onSelectDevice, category, on
               return (
                 <SelectItem key={brand} value={brand}>
                   <div className="flex items-center">
-                    <BrandIcon className="mr-2 h-4 w-4" />
+                    <BrandIcon className="mr-2 h-3 w-3" />
                     {brand}
                   </div>
                 </SelectItem>
@@ -28,7 +28,7 @@ const DeviceSelector = ({ devices, selectedDevices, onSelectDevice, category, on
           </SelectContent>
         </Select>
         <Select value={category} onValueChange={onCategoryChange}>
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-[140px]">
             <SelectValue placeholder="Category" />
           </SelectTrigger>
           <SelectContent>
@@ -39,18 +39,18 @@ const DeviceSelector = ({ devices, selectedDevices, onSelectDevice, category, on
           </SelectContent>
         </Select>
       </div>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
+      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-1">
         {devices.map((device) => {
           const DeviceIcon = getBrandIcon(device.brand);
           return (
             <Button
               key={device.name}
               variant={selectedDevices.some(d => d.name === device.name) ? "default" : "outline"}
-              className="w-full justify-start text-left text-xs"
+              className="w-full h-auto py-1 px-2 justify-start text-left text-xs"
               onClick={() => onSelectDevice(device)}
             >
-              <DeviceIcon className="mr-2 h-4 w-4" />
-              {device.name}
+              <DeviceIcon className="mr-1 h-3 w-3" />
+              <span className="truncate">{device.name}</span>
             </Button>
           );
         })}
