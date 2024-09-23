@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -33,6 +33,16 @@ const Index = () => {
       (brand === 'all' || device.brand === brand)
     );
   }, [category, brand]);
+
+  useEffect(() => {
+    // Forzar la recarga de los iframes cuando cambia la URL
+    selectedDevices.forEach(device => {
+      const iframe = iframeRefs.current[device.name];
+      if (iframe) {
+        iframe.src = url;
+      }
+    });
+  }, [url, selectedDevices, iframeRefs]);
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
@@ -83,7 +93,6 @@ const Index = () => {
                         url={url} 
                         device={device} 
                         onRemove={handleDeviceChange}
-                        iframeRef={(el) => iframeRefs.current[device.name] = el}
                         syncAction={syncAction}
                       />
                     ))}

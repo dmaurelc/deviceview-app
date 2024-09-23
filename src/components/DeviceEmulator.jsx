@@ -55,7 +55,7 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction }) => {
   }, [syncAction]);
 
   return (
-    <Card className="relative overflow-hidden m-2" style={{ width: `${device.width * 0.5}px`, height: `${device.height * 0.5}px` }}>
+    <Card className="relative overflow-hidden m-2" style={{ width: `${device.width * 0.75}px`, height: `${device.height * 0.75}px` }}>
       <button onClick={() => onRemove(device)} className="absolute top-1 right-1 text-gray-500 hover:text-gray-700 z-10">
         <X size={16} />
       </button>
@@ -63,7 +63,7 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction }) => {
         ref={containerRef}
         className="w-full h-full overflow-hidden"
         style={{
-          transform: 'scale(0.5)',
+          transform: 'scale(0.75)',
           transformOrigin: 'top left',
         }}
       >
