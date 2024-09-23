@@ -1,6 +1,7 @@
 (function() {
   let lastScrollPosition = { x: 0, y: 0 };
   let scrollTimeout;
+  let currentTheme = 'light';
 
   function throttle(func, delay) {
     let lastCall = 0;
@@ -45,11 +46,21 @@
     }, '*');
   }
 
+  function applyTheme(theme) {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    currentTheme = theme;
+  }
+
   window.addEventListener('message', function(event) {
     if (event.data.type === 'INIT_LISTENERS') {
       window.addEventListener('scroll', throttle(handleScroll, 100));
       window.addEventListener('wheel', handleZoom);
       window.addEventListener('click', handleClick);
+      applyTheme(event.data.theme);
     } else if (event.data.type === 'SYNC_ACTION') {
       const { scroll, zoom } = event.data.payload;
       if (scroll) {
@@ -58,6 +69,8 @@
       if (zoom) {
         // Implementar lógica de zoom si es necesario
       }
+    } else if (event.data.type === 'THEME_CHANGE') {
+      applyTheme(event.data.theme);
     }
   });
 })();

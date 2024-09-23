@@ -2,21 +2,21 @@ import React, { useEffect, useRef } from 'react';
 import { Card } from "@/components/ui/card";
 import { X } from 'lucide-react';
 
-const DeviceEmulator = ({ url, device, onRemove, syncAction }) => {
+const DeviceEmulator = ({ url, device, onRemove, syncAction, theme }) => {
   const iframeRef = useRef(null);
 
   useEffect(() => {
     const iframe = iframeRef.current;
     if (iframe) {
       const handleLoad = () => {
-        iframe.contentWindow.postMessage({ type: 'INIT_LISTENERS' }, '*');
+        iframe.contentWindow.postMessage({ type: 'INIT_LISTENERS', theme }, '*');
       };
       iframe.addEventListener('load', handleLoad);
       return () => {
         iframe.removeEventListener('load', handleLoad);
       };
     }
-  }, []);
+  }, [theme]);
 
   useEffect(() => {
     const handleMessage = (event) => {
@@ -30,6 +30,12 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction }) => {
       window.removeEventListener('message', handleMessage);
     };
   }, [syncAction, device.name]);
+
+  useEffect(() => {
+    if (iframeRef.current) {
+      iframeRef.current.contentWindow.postMessage({ type: 'THEME_CHANGE', theme }, '*');
+    }
+  }, [theme]);
 
   return (
     <Card className="relative overflow-hidden m-2" style={{ width: `${device.width}px`, height: `${device.height + 30}px` }}>

@@ -93,6 +93,7 @@ const Index = () => {
                         device={device} 
                         onRemove={handleDeviceChange}
                         syncAction={syncAction}
+                        theme={theme}
                       />
                     ))}
                   </div>
