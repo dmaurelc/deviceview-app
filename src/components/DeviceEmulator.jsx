@@ -2,21 +2,21 @@ import React, { useEffect, useRef } from 'react';
 import { Card } from "@/components/ui/card";
 import { X } from 'lucide-react';
 
-const DeviceEmulator = ({ url, device, onRemove, syncAction }) => {
+const DeviceEmulator = ({ url, device, onRemove, syncAction, syncOptions }) => {
   const iframeRef = useRef(null);
 
   useEffect(() => {
     const iframe = iframeRef.current;
     if (iframe) {
       const handleLoad = () => {
-        iframe.contentWindow.postMessage({ type: 'INIT_LISTENERS' }, '*');
+        iframe.contentWindow.postMessage({ type: 'INIT_LISTENERS', syncOptions }, '*');
       };
       iframe.addEventListener('load', handleLoad);
       return () => {
         iframe.removeEventListener('load', handleLoad);
       };
     }
-  }, []);
+  }, [syncOptions]);
 
   useEffect(() => {
     const handleMessage = (event) => {

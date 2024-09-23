@@ -5,6 +5,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import DeviceEmulator from '../components/DeviceEmulator';
 import DeviceSelector from '../components/DeviceSelector';
+import SyncControls from '../components/SyncControls';
 import { devices } from '../utils/devices';
 import { useTheme } from 'next-themes';
 import useSyncedDevices from '../hooks/useSyncedDevices';
@@ -15,7 +16,7 @@ const Index = () => {
   const [category, setCategory] = useState('all');
   const [brand, setBrand] = useState('all');
   const { theme, setTheme } = useTheme();
-  const { syncedState, syncAction, iframeRefs } = useSyncedDevices(selectedDevices);
+  const { syncedState, syncAction, iframeRefs, syncOptions, toggleSyncOption } = useSyncedDevices(selectedDevices);
 
   const handleUrlChange = useCallback((e) => setUrl(e.target.value), []);
   const handleDeviceChange = useCallback((device) => {
@@ -75,15 +76,21 @@ const Index = () => {
                     <Label htmlFor="dark-mode" className="ml-2">Modo Oscuro</Label>
                   </div>
                 </div>
-                <DeviceSelector
-                  devices={filteredDevices}
-                  selectedDevices={selectedDevices}
-                  onSelectDevice={handleDeviceChange}
-                  category={category}
-                  onCategoryChange={handleCategoryChange}
-                  brand={brand}
-                  onBrandChange={handleBrandChange}
-                />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                  <DeviceSelector
+                    devices={filteredDevices}
+                    selectedDevices={selectedDevices}
+                    onSelectDevice={handleDeviceChange}
+                    category={category}
+                    onCategoryChange={handleCategoryChange}
+                    brand={brand}
+                    onBrandChange={handleBrandChange}
+                  />
+                  <SyncControls
+                    syncOptions={syncOptions}
+                    onToggle={toggleSyncOption}
+                  />
+                </div>
                 <div className="mt-8 overflow-x-auto">
                   <div className="flex flex-wrap">
                     {selectedDevices.map(device => (
@@ -93,6 +100,7 @@ const Index = () => {
                         device={device} 
                         onRemove={handleDeviceChange}
                         syncAction={syncAction}
+                        syncOptions={syncOptions}
                       />
                     ))}
                   </div>
