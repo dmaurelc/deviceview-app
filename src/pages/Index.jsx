@@ -47,18 +47,19 @@ const Index = () => {
       />
       <div className="flex-1 flex flex-col overflow-hidden">
         <Header theme={theme} setTheme={setTheme} />
-        <main className="flex-1 overflow-x-auto overflow-y-auto bg-gray-200 dark:bg-gray-800">
-          <div className="p-6">
-            <div className="flex flex-nowrap items-start overflow-x-auto pb-4">
+        <main className="flex-1 bg-gray-200 dark:bg-gray-800">
+          <div className="p-6 h-full">
+            <div className="flex h-full items-start overflow-x-auto snap-x snap-mandatory">
               {selectedDevices.map(device => (
-                <DeviceEmulator 
-                  key={device.name} 
-                  url={url} 
-                  device={device} 
-                  onRemove={handleDeviceChange}
-                  syncAction={syncAction}
-                  theme={theme}
-                />
+                <div key={device.name} className="snap-start flex-shrink-0 mr-6 last:mr-0">
+                  <DeviceEmulator 
+                    url={url} 
+                    device={device} 
+                    onRemove={handleDeviceChange}
+                    syncAction={syncAction}
+                    theme={theme}
+                  />
+                </div>
               ))}
             </div>
           </div>
