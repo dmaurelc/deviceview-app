@@ -40,7 +40,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <div className="px-4 sm:px-6 lg:px-8 py-10">
         <h1 className="text-3xl font-bold mb-8">Device Previewer</h1>
         <div className="space-y-6">
           <div className="flex items-center space-x-4">
@@ -69,20 +69,20 @@ const Index = () => {
             brand={brand}
             onBrandChange={handleBrandChange}
           />
-          <div className="w-full overflow-x-auto">
-            <div className="flex space-x-4 pb-4" style={{ minWidth: 'max-content' }}>
-              {selectedDevices.map(device => (
-                <DeviceEmulator 
-                  key={device.name} 
-                  url={url} 
-                  device={device} 
-                  onRemove={handleDeviceChange}
-                  syncAction={syncAction}
-                  theme={theme}
-                />
-              ))}
-            </div>
-          </div>
+        </div>
+      </div>
+      <div className="w-full overflow-x-auto">
+        <div className="flex space-x-4 pb-4 px-4 sm:px-6 lg:px-8" style={{ minWidth: 'max-content' }}>
+          {selectedDevices.map(device => (
+            <DeviceEmulator 
+              key={device.name} 
+              url={url} 
+              device={device} 
+              onRemove={handleDeviceChange}
+              syncAction={syncAction}
+              theme={theme}
+            />
+          ))}
         </div>
       </div>
     </div>
