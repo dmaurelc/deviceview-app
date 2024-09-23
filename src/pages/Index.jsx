@@ -49,7 +49,7 @@ const Index = () => {
         <Header theme={theme} setTheme={setTheme} />
         <main className="flex-1 overflow-x-auto overflow-y-auto bg-gray-200 dark:bg-gray-800">
           <div className="p-6">
-            <div className="flex flex-nowrap overflow-x-auto pb-4">
+            <div className="flex flex-nowrap items-start overflow-x-auto pb-4">
               {selectedDevices.map(device => (
                 <DeviceEmulator 
                   key={device.name} 
