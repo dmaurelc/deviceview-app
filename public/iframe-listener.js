@@ -80,12 +80,20 @@
           }
           break;
         case 'clicks':
-          // Implementar lógica de clicks si es necesario
+          const clickEvent = new MouseEvent('click', {
+            view: window,
+            bubbles: true,
+            cancelable: true,
+            clientX: payload.click.x,
+            clientY: payload.click.y
+          });
+          document.elementFromPoint(payload.click.x, payload.click.y).dispatchEvent(clickEvent);
           break;
         case 'inputs':
           const inputElement = document.getElementById(payload.input.id);
           if (inputElement) {
             inputElement.value = payload.input.value;
+            inputElement.dispatchEvent(new Event('input', { bubbles: true }));
           }
           break;
       }
