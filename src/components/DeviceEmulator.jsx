@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useCallback } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 
-const DeviceEmulator = ({ url, device, onRemove, iframeRef, syncAction }) => {
+const DeviceEmulator = ({ url, device, onRemove, syncAction }) => {
   const containerRef = useRef(null);
+  const iframeRef = useRef(null);
 
   const handleScroll = useCallback((event) => {
     syncAction({
@@ -21,31 +22,36 @@ const DeviceEmulator = ({ url, device, onRemove, iframeRef, syncAction }) => {
     }
   }, [syncAction]);
 
+  const setupIframeListeners = useCallback(() => {
+    const iframe = iframeRef.current;
+    if (iframe && iframe.contentWindow) {
+      iframe.contentWindow.addEventListener('scroll', handleScroll);
+      iframe.contentWindow.addEventListener('wheel', handleZoom);
+    }
+  }, [handleScroll, handleZoom]);
+
   useEffect(() => {
-    const iframe = iframeRef;
+    const iframe = iframeRef.current;
     if (iframe) {
-      const handleIframeLoad = () => {
-        iframe.contentWindow.addEventListener('scroll', handleScroll);
-        iframe.contentWindow.addEventListener('wheel', handleZoom);
-      };
+      iframe.addEventListener('load', setupIframeListeners);
+    }
 
-      iframe.addEventListener('load', handleIframeLoad);
-
-      return () => {
-        iframe.removeEventListener('load', handleIframeLoad);
+    return () => {
+      if (iframe) {
+        iframe.removeEventListener('load', setupIframeListeners);
         if (iframe.contentWindow) {
           iframe.contentWindow.removeEventListener('scroll', handleScroll);
           iframe.contentWindow.removeEventListener('wheel', handleZoom);
         }
-      };
-    }
-  }, [iframeRef, handleScroll, handleZoom]);
+      }
+    };
+  }, [setupIframeListeners, handleScroll, handleZoom]);
 
   useEffect(() => {
     const handleSyncState = (event) => {
       if (event.data.type === 'SYNC_STATE') {
         const { scroll, zoom } = event.data.payload;
-        if (scroll && iframeRef.current) {
+        if (scroll && iframeRef.current && iframeRef.current.contentWindow) {
           iframeRef.current.contentWindow.scrollTo(scroll.x, scroll.y);
         }
         if (zoom && containerRef.current) {
@@ -56,7 +62,7 @@ const DeviceEmulator = ({ url, device, onRemove, iframeRef, syncAction }) => {
 
     window.addEventListener('message', handleSyncState);
     return () => window.removeEventListener('message', handleSyncState);
-  }, [iframeRef]);
+  }, []);
 
   return (
     <Card className="mb-4 flex-shrink-0">
