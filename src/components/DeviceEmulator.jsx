@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from 'react';
-import { Card } from "@/components/ui/card";
 import { X } from 'lucide-react';
 
 const DeviceEmulator = ({ url, device, onRemove, syncAction, theme }) => {
@@ -38,11 +37,11 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction, theme }) => {
   }, [theme]);
 
   return (
-    <Card className="relative overflow-hidden m-2" style={{ width: `${device.width}px`, height: `${device.height + 30}px` }}>
-      <div className="bg-gray-200 dark:bg-gray-800 p-1 text-center text-sm font-semibold">
+    <div className="relative bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden" style={{ width: `${device.width}px`, height: `${device.height + 30}px` }}>
+      <div className="bg-gray-100 dark:bg-gray-700 p-1 text-center text-sm font-semibold">
         {device.name}
       </div>
-      <button onClick={() => onRemove(device)} className="absolute top-1 right-1 text-gray-500 hover:text-gray-700 z-10">
+      <button onClick={() => onRemove(device)} className="absolute top-1 right-1 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 z-10">
         <X size={16} />
       </button>
       <iframe
@@ -55,7 +54,7 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction, theme }) => {
           height: `${device.height}px`,
         }}
       />
-    </Card>
+    </div>
   );
 };
 
