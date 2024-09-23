@@ -1,28 +1,9 @@
-import React, { useEffect, useRef, useCallback } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Card } from "@/components/ui/card";
 import { X } from 'lucide-react';
 
 const DeviceEmulator = ({ url, device, onRemove, syncAction }) => {
-  const containerRef = useRef(null);
   const iframeRef = useRef(null);
-
-  const handleMessage = useCallback((event) => {
-    if (event.origin !== window.location.origin) return;
-    
-    const { type, payload } = event.data;
-    if (type === 'SCROLL_EVENT') {
-      syncAction({ scroll: payload });
-    } else if (type === 'ZOOM_EVENT') {
-      syncAction({ zoom: payload });
-    }
-  }, [syncAction]);
-
-  useEffect(() => {
-    window.addEventListener('message', handleMessage);
-    return () => {
-      window.removeEventListener('message', handleMessage);
-    };
-  }, [handleMessage]);
 
   useEffect(() => {
     const iframe = iframeRef.current;
@@ -38,21 +19,17 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction }) => {
   }, []);
 
   useEffect(() => {
-    const container = containerRef.current;
-    if (container) {
-      const handleZoom = (event) => {
-        if (event.ctrlKey) {
-          event.preventDefault();
-          const newZoom = Math.min(Math.max(0.5, container.style.zoom * (event.deltaY > 0 ? 0.9 : 1.1)), 2);
-          syncAction({ zoom: newZoom });
-        }
-      };
-      container.addEventListener('wheel', handleZoom);
-      return () => {
-        container.removeEventListener('wheel', handleZoom);
-      };
-    }
-  }, [syncAction]);
+    const handleMessage = (event) => {
+      if (event.data.type === 'DEVICE_ACTION') {
+        syncAction(event.data.payload, device.name);
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => {
+      window.removeEventListener('message', handleMessage);
+    };
+  }, [syncAction, device.name]);
 
   return (
     <Card className="relative overflow-hidden m-2" style={{ width: `${device.width}px`, height: `${device.height + 30}px` }}>
@@ -62,21 +39,16 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction }) => {
       <button onClick={() => onRemove(device)} className="absolute top-1 right-1 text-gray-500 hover:text-gray-700 z-10">
         <X size={16} />
       </button>
-      <div
-        ref={containerRef}
-        className="w-full h-full overflow-hidden"
-      >
-        <iframe
-          ref={iframeRef}
-          src={url}
-          title={`Preview on ${device.name}`}
-          className="w-full h-full border-0"
-          style={{
-            width: `${device.width}px`,
-            height: `${device.height}px`,
-          }}
-        />
-      </div>
+      <iframe
+        ref={iframeRef}
+        src={url}
+        title={`Preview on ${device.name}`}
+        className="w-full h-full border-0"
+        style={{
+          width: `${device.width}px`,
+          height: `${device.height}px`,
+        }}
+      />
     </Card>
   );
 };
