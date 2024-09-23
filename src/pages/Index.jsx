@@ -7,6 +7,7 @@ import DeviceEmulator from '../components/DeviceEmulator';
 import DeviceSelector from '../components/DeviceSelector';
 import { devices } from '../utils/devices';
 import { useTheme } from 'next-themes';
+import useSyncedDevices from '../hooks/useSyncedDevices';
 
 const Index = () => {
   const [url, setUrl] = useState('https://example.com');
@@ -14,6 +15,7 @@ const Index = () => {
   const [category, setCategory] = useState('all');
   const [brand, setBrand] = useState('all');
   const { theme, setTheme } = useTheme();
+  const { syncedState, syncAction, iframeRefs } = useSyncedDevices(selectedDevices);
 
   const handleUrlChange = (e) => setUrl(e.target.value);
   const handleDeviceChange = (device) => {
@@ -75,6 +77,8 @@ const Index = () => {
             url={url} 
             device={device} 
             onRemove={handleDeviceChange}
+            iframeRef={(el) => iframeRefs.current[device.name] = el}
+            syncAction={syncAction}
           />
         ))}
       </div>

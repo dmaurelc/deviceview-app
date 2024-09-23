@@ -18,14 +18,6 @@ export const devices = [
   { name: 'Pixel 5', width: 393, height: 851, category: 'mobile', brand: 'Google' },
   { name: 'Google Pixel 4', width: 353, height: 745, category: 'mobile', brand: 'Google' },
   { name: 'Nexus 9', width: 1024, height: 768, category: 'tablet', brand: 'Google' },
-
-  // Microsoft
-  { name: 'Surface Pro 7', width: 912, height: 1368, category: 'tablet', brand: 'Microsoft' },
-
-  // Other
-  { name: 'OnePlus 9', width: 412, height: 915, category: 'mobile', brand: 'OnePlus' },
-  { name: 'Xiaomi Mi 11', width: 393, height: 873, category: 'mobile', brand: 'Xiaomi' },
-  { name: 'Kindle Fire HDX', width: 800, height: 1280, category: 'tablet', brand: 'Amazon' },
 ];
 
 export const brands = [...new Set(devices.map(device => device.brand))];
