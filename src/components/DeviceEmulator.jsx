@@ -5,64 +5,46 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction }) => {
   const containerRef = useRef(null);
   const iframeRef = useRef(null);
 
-  const handleScroll = useCallback((event) => {
-    syncAction({
-      scroll: {
-        x: event.target.scrollingElement.scrollLeft,
-        y: event.target.scrollingElement.scrollTop,
-      },
-    });
-  }, [syncAction]);
-
-  const handleZoom = useCallback((event) => {
-    if (event.ctrlKey) {
-      event.preventDefault();
-      const newZoom = Math.min(Math.max(0.5, containerRef.current.style.zoom * (event.deltaY > 0 ? 0.9 : 1.1)), 2);
-      syncAction({ zoom: newZoom });
+  const handleMessage = useCallback((event) => {
+    if (event.origin !== window.location.origin) return;
+    
+    const { type, payload } = event.data;
+    if (type === 'SCROLL_EVENT') {
+      syncAction({ scroll: payload });
+    } else if (type === 'ZOOM_EVENT') {
+      syncAction({ zoom: payload });
     }
   }, [syncAction]);
 
-  const setupIframeListeners = useCallback(() => {
-    const iframe = iframeRef.current;
-    if (iframe && iframe.contentWindow) {
-      iframe.contentWindow.addEventListener('scroll', handleScroll);
-      iframe.contentWindow.addEventListener('wheel', handleZoom);
-    }
-  }, [handleScroll, handleZoom]);
+  useEffect(() => {
+    window.addEventListener('message', handleMessage);
+    return () => {
+      window.removeEventListener('message', handleMessage);
+    };
+  }, [handleMessage]);
 
   useEffect(() => {
     const iframe = iframeRef.current;
     if (iframe) {
-      iframe.addEventListener('load', setupIframeListeners);
+      iframe.onload = () => {
+        iframe.contentWindow.postMessage({ type: 'INIT_LISTENERS' }, '*');
+      };
     }
-
-    return () => {
-      if (iframe) {
-        iframe.removeEventListener('load', setupIframeListeners);
-        if (iframe.contentWindow) {
-          iframe.contentWindow.removeEventListener('scroll', handleScroll);
-          iframe.contentWindow.removeEventListener('wheel', handleZoom);
-        }
-      }
-    };
-  }, [setupIframeListeners, handleScroll, handleZoom]);
+  }, []);
 
   useEffect(() => {
-    const handleSyncState = (event) => {
-      if (event.data.type === 'SYNC_STATE') {
-        const { scroll, zoom } = event.data.payload;
-        if (scroll && iframeRef.current && iframeRef.current.contentWindow) {
-          iframeRef.current.contentWindow.scrollTo(scroll.x, scroll.y);
+    if (containerRef.current) {
+      const handleZoom = (event) => {
+        if (event.ctrlKey) {
+          event.preventDefault();
+          const newZoom = Math.min(Math.max(0.5, containerRef.current.style.zoom * (event.deltaY > 0 ? 0.9 : 1.1)), 2);
+          syncAction({ zoom: newZoom });
         }
-        if (zoom && containerRef.current) {
-          containerRef.current.style.zoom = zoom;
-        }
-      }
-    };
-
-    window.addEventListener('message', handleSyncState);
-    return () => window.removeEventListener('message', handleSyncState);
-  }, []);
+      };
+      containerRef.current.addEventListener('wheel', handleZoom);
+      return () => containerRef.current.removeEventListener('wheel', handleZoom);
+    }
+  }, [syncAction]);
 
   return (
     <Card className="mb-4 flex-shrink-0">
