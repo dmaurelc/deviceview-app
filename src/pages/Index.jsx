@@ -72,7 +72,7 @@ const Index = () => {
         </div>
       </div>
       <div className="w-full overflow-x-auto">
-        <div className="flex space-x-4 pb-4 px-4 sm:px-6 lg:px-8" style={{ minWidth: 'max-content' }}>
+        <div className="flex space-x-4 pb-4 px-4 sm:px-6 lg:px-8 min-w-max">
           {selectedDevices.map(device => (
             <DeviceEmulator 
               key={device.name} 
