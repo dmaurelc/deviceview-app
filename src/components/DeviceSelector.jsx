@@ -19,7 +19,7 @@ const DeviceSelector = ({ devices, selectedDevices, onSelectDevice, category, on
               return (
                 <SelectItem key={brand} value={brand}>
                   <div className="flex items-center">
-                    <BrandIcon className="mr-2 h-3 w-3" />
+                    <BrandIcon className="mr-2 h-4 w-4" />
                     {brand}
                   </div>
                 </SelectItem>
@@ -39,17 +39,18 @@ const DeviceSelector = ({ devices, selectedDevices, onSelectDevice, category, on
           </SelectContent>
         </Select>
       </div>
-      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-1">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
         {devices.map((device) => {
           const DeviceIcon = getBrandIcon(device.brand);
+          const isSelected = selectedDevices.some(d => d.name === device.name);
           return (
             <Button
               key={device.name}
-              variant={selectedDevices.some(d => d.name === device.name) ? "default" : "outline"}
-              className="w-full h-auto py-1 px-2 justify-start text-left text-xs"
+              variant={isSelected ? "default" : "outline"}
+              className={`w-full h-auto py-2 px-3 justify-start text-left text-xs ${isSelected ? 'bg-primary text-primary-foreground' : ''}`}
               onClick={() => onSelectDevice(device)}
             >
-              <DeviceIcon className="mr-1 h-3 w-3" />
+              <DeviceIcon className="mr-2 h-4 w-4" />
               <span className="truncate">{device.name}</span>
             </Button>
           );

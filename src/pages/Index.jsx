@@ -4,6 +4,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import DeviceEmulator from '../components/DeviceEmulator';
 import DeviceSelector from '../components/DeviceSelector';
+import Header from '../components/Header';
 import { devices } from '../utils/devices';
 import { useTheme } from 'next-themes';
 import useSyncedDevices from '../hooks/useSyncedDevices';
@@ -46,40 +47,36 @@ const Index = () => {
   }, [selectedDevices]);
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
-      <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <h1 className="text-2xl font-bold mb-4">Device Previewer</h1>
-        <div className="space-y-4">
-          <div className="flex items-center space-x-4">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+      <Header theme={theme} setTheme={setTheme} />
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="space-y-6">
+          <div className="bg-white dark:bg-gray-800 shadow-sm rounded-lg p-6">
+            <h2 className="text-xl font-semibold mb-4">URL Preview</h2>
             <Input
               type="url"
               placeholder="Enter URL to preview"
               value={url}
               onChange={handleUrlChange}
-              className="flex-grow"
+              className="w-full"
             />
-            <div className="flex items-center space-x-2">
-              <Switch
-                id="dark-mode"
-                checked={theme === 'dark'}
-                onCheckedChange={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              />
-              <Label htmlFor="dark-mode">Dark Mode</Label>
-            </div>
           </div>
-          <DeviceSelector
-            devices={filteredDevices}
-            selectedDevices={selectedDevices}
-            onSelectDevice={handleDeviceChange}
-            category={category}
-            onCategoryChange={handleCategoryChange}
-            brand={brand}
-            onBrandChange={handleBrandChange}
-          />
+          <div className="bg-white dark:bg-gray-800 shadow-sm rounded-lg p-6">
+            <h2 className="text-xl font-semibold mb-4">Device Selection</h2>
+            <DeviceSelector
+              devices={filteredDevices}
+              selectedDevices={selectedDevices}
+              onSelectDevice={handleDeviceChange}
+              category={category}
+              onCategoryChange={handleCategoryChange}
+              brand={brand}
+              onBrandChange={handleBrandChange}
+            />
+          </div>
         </div>
-      </div>
-      <div className="w-full overflow-x-auto scrollbar-hide" ref={scrollContainerRef}>
-        <div className="flex space-x-4 pb-4 px-4 sm:px-6 lg:px-8 min-w-max max-w-full">
+      </main>
+      <div className="w-full overflow-x-auto scrollbar-hide bg-gray-100 dark:bg-gray-800 py-6" ref={scrollContainerRef}>
+        <div className="flex space-x-6 px-4 sm:px-6 lg:px-8 min-w-max max-w-full">
           {selectedDevices.map(device => (
             <DeviceEmulator 
               key={device.name} 

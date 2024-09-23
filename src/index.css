@@ -76,36 +76,6 @@
   }
 }
 
-.btn {
-  @apply px-4 py-2 rounded-md transition-colors duration-200;
-}
-
-.input {
-  @apply border-gray-300 focus:border-blue-500 focus:ring-blue-500;
-}
-
-.select {
-  @apply border-gray-300 focus:border-blue-500 focus:ring-blue-500;
-}
-
-h1, h2, h3, h4, h5, h6 {
-  @apply mb-4 font-semibold;
-}
-
-p {
-  @apply mb-4;
-}
-
-.container {
-  @apply px-4 mx-auto;
-}
-
-@media (max-width: 640px) {
-  .container {
-    @apply px-2;
-  }
-}
-
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -113,4 +83,10 @@ p {
 
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
+}
+
+@layer utilities {
+  .transition-bg {
+    transition: background-color 0.3s ease;
+  }
 }

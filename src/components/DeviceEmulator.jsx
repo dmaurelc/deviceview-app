@@ -37,13 +37,13 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction, theme }) => {
   }, [theme]);
 
   return (
-    <div className="relative bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden" style={{ width: `${device.width}px`, height: `${device.height + 30}px` }}>
-      <div className="bg-gray-100 dark:bg-gray-700 p-1 text-center text-sm font-semibold">
-        {device.name}
+    <div className="relative bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden" style={{ width: `${device.width}px`, height: `${device.height + 40}px` }}>
+      <div className="bg-gray-100 dark:bg-gray-700 p-2 text-center text-sm font-medium flex justify-between items-center">
+        <span>{device.name}</span>
+        <button onClick={() => onRemove(device)} className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+          <X size={18} />
+        </button>
       </div>
-      <button onClick={() => onRemove(device)} className="absolute top-1 right-1 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 z-10">
-        <X size={16} />
-      </button>
       <iframe
         ref={iframeRef}
         src={url}
