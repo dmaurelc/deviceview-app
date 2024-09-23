@@ -4,10 +4,12 @@ import { Button } from "@/components/ui/button";
 
 const Header = ({ theme, setTheme }) => {
   return (
-    <header className="bg-white dark:bg-gray-800 shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center py-3">
+    <header className="sticky top-0 z-50 w-full border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+      <div className="container flex h-16 items-center space-x-4 sm:justify-between sm:space-x-0">
+        <div className="flex gap-6 md:gap-10">
           <h1 className="text-xl font-bold text-gray-900 dark:text-white">Device Previewer</h1>
+        </div>
+        <div className="flex flex-1 items-center justify-end space-x-4">
           <Button
             variant="ghost"
             size="icon"
