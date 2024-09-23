@@ -1,6 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import DeviceEmulator from '../components/DeviceEmulator';
@@ -17,13 +16,18 @@ const Index = () => {
   const { theme, setTheme } = useTheme();
   const { syncedState, syncAction } = useSyncedDevices(selectedDevices);
 
-  const handleUrlChange = useCallback((e) => setUrl(e.target.value), []);
+  const handleUrlChange = useCallback((e) => {
+    const newUrl = e.target.value.trim();
+    setUrl(newUrl || 'https://tailwindcss.com');
+  }, []);
+
   const handleDeviceChange = useCallback((device) => {
     setSelectedDevices(prev => {
       const isSelected = prev.some(d => d.name === device.name);
       return isSelected ? prev.filter(d => d.name !== device.name) : [device, ...prev];
     });
   }, []);
+
   const handleCategoryChange = useCallback((newCategory) => setCategory(newCategory), []);
   const handleBrandChange = useCallback((newBrand) => setBrand(newBrand), []);
 
@@ -47,7 +51,6 @@ const Index = () => {
               onChange={handleUrlChange}
               className="flex-grow"
             />
-            <Button onClick={() => setUrl(url)}>Load</Button>
             <div className="flex items-center space-x-2">
               <Switch
                 id="dark-mode"
@@ -66,8 +69,8 @@ const Index = () => {
             brand={brand}
             onBrandChange={handleBrandChange}
           />
-          <div className="overflow-x-auto">
-            <div className="flex flex-wrap gap-4">
+          <div className="w-full overflow-x-auto">
+            <div className="flex space-x-4 pb-4" style={{ minWidth: 'max-content' }}>
               {selectedDevices.map(device => (
                 <DeviceEmulator 
                   key={device.name} 
