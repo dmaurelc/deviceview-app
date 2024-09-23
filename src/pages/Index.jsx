@@ -49,7 +49,7 @@ const Index = () => {
         <Header theme={theme} setTheme={setTheme} />
         <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200 dark:bg-gray-800">
           <div className="container mx-auto px-6 py-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div className="flex flex-wrap justify-center gap-6">
               {selectedDevices.map(device => (
                 <DeviceEmulator 
                   key={device.name} 
