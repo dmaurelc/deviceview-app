@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button, ScrollArea } from "@nextui-org/react";
+import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from "@nextui-org/react";
 
 const DeviceSelector = ({ devices, selectedDevice, onSelectDevice, category, onCategoryChange }) => {
   return (
@@ -19,7 +19,7 @@ const DeviceSelector = ({ devices, selectedDevice, onSelectDevice, category, onC
           <DropdownItem key="tablet">Tablet</DropdownItem>
         </DropdownMenu>
       </Dropdown>
-      <ScrollArea className="h-[300px] w-full">
+      <div className="h-[300px] w-full overflow-y-auto">
         {devices.map((device) => (
           <Button
             key={device.name}
@@ -30,7 +30,7 @@ const DeviceSelector = ({ devices, selectedDevice, onSelectDevice, category, onC
             {device.name}
           </Button>
         ))}
-      </ScrollArea>
+      </div>
     </div>
   );
 };
