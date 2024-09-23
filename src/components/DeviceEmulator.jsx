@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from 'react';
 import { X } from 'lucide-react';
-import { Button } from "@/components/ui/button";
 
 const DeviceEmulator = ({ url, device, onRemove, syncAction, theme }) => {
   const iframeRef = useRef(null);
@@ -38,17 +37,12 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction, theme }) => {
   }, [theme]);
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden flex-shrink-0 snap-center" style={{ width: `${device.width}px`, height: `${device.height + 40}px` }}>
-      <div className="bg-gray-100 dark:bg-gray-700 p-2 text-sm font-medium flex justify-between items-center">
-        <span className="text-gray-700 dark:text-gray-300">{device.name}</span>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => onRemove(device)}
-          className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-        >
+    <div className="bg-white dark:bg-gray-700 rounded-lg shadow-md overflow-hidden flex-shrink-0" style={{ width: `${device.width}px`, height: `${device.height + 40}px` }}>
+      <div className="bg-gray-100 dark:bg-gray-600 p-2 text-sm font-medium flex justify-between items-center">
+        <span>{device.name}</span>
+        <button onClick={() => onRemove(device)} className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
           <X size={18} />
-        </Button>
+        </button>
       </div>
       <div style={{ height: `${device.height}px` }}>
         <iframe
