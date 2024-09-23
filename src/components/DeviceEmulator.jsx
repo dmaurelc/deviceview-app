@@ -38,7 +38,7 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction, theme }) => {
   }, [theme]);
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden flex-shrink-0" style={{ width: `${device.width}px`, height: `${device.height + 40}px` }}>
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden flex-shrink-0 snap-center" style={{ width: `${device.width}px`, height: `${device.height + 40}px` }}>
       <div className="bg-gray-100 dark:bg-gray-700 p-2 text-sm font-medium flex justify-between items-center">
         <span className="text-gray-700 dark:text-gray-300">{device.name}</span>
         <Button

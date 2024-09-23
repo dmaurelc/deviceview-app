@@ -9,8 +9,7 @@ import { devices } from '../utils/devices';
 const Index = () => {
   const [url, setUrl] = useState('https://tailwindcss.com');
   const [selectedDevices, setSelectedDevices] = useState([]);
-  const [category, setCategory] = useState('all');
-  const [brand, setBrand] = useState('all');
+  const [filter, setFilter] = useState('all');
   const { theme, setTheme } = useTheme();
   const { syncAction } = useSyncedDevices(selectedDevices);
 
@@ -26,11 +25,8 @@ const Index = () => {
   }, []);
 
   const filteredDevices = useMemo(() => {
-    return devices.filter(device => 
-      (category === 'all' || device.category === category) &&
-      (brand === 'all' || device.brand === brand)
-    );
-  }, [category, brand]);
+    return devices.filter(device => filter === 'all' || device.category === filter);
+  }, [filter]);
 
   return (
     <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
@@ -40,15 +36,13 @@ const Index = () => {
         devices={filteredDevices}
         selectedDevices={selectedDevices}
         onSelectDevice={handleDeviceChange}
-        category={category}
-        onCategoryChange={setCategory}
-        brand={brand}
-        onBrandChange={setBrand}
+        filter={filter}
+        onFilterChange={setFilter}
       />
       <div className="flex-1 flex flex-col overflow-hidden">
         <Header theme={theme} setTheme={setTheme} />
-        <main className="flex-1 overflow-x-auto">
-          <div className="p-6 min-w-full inline-flex items-start space-x-6 snap-x snap-mandatory">
+        <main className="flex-1 overflow-x-auto snap-x snap-mandatory">
+          <div className="p-6 min-w-full inline-flex items-start space-x-6">
             {selectedDevices.map(device => (
               <div key={device.name} className="snap-start flex-shrink-0">
                 <DeviceEmulator 
