@@ -70,17 +70,19 @@ const Index = () => {
         brand={brand}
         onBrandChange={handleBrandChange}
       />
-      <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {selectedDevices.map(device => (
-          <DeviceEmulator 
-            key={device.name} 
-            url={url} 
-            device={device} 
-            onRemove={handleDeviceChange}
-            iframeRef={(el) => iframeRefs.current[device.name] = el}
-            syncAction={syncAction}
-          />
-        ))}
+      <div className="mt-8 overflow-x-auto">
+        <div className="flex space-x-4 pb-4">
+          {selectedDevices.map(device => (
+            <DeviceEmulator 
+              key={device.name} 
+              url={url} 
+              device={device} 
+              onRemove={handleDeviceChange}
+              iframeRef={(el) => iframeRefs.current[device.name] = el}
+              syncAction={syncAction}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );

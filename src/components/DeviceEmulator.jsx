@@ -24,6 +24,23 @@ const DeviceEmulator = ({ url, device, onRemove, iframeRef, syncAction }) => {
     }
   }, [iframeRef, syncAction]);
 
+  useEffect(() => {
+    const handleSyncState = (event) => {
+      if (event.data.type === 'SYNC_STATE') {
+        const { scroll, zoom } = event.data.payload;
+        if (scroll) {
+          iframeRef.current.contentWindow.scrollTo(scroll.x, scroll.y);
+        }
+        if (zoom) {
+          containerRef.current.style.zoom = zoom;
+        }
+      }
+    };
+
+    window.addEventListener('message', handleSyncState);
+    return () => window.removeEventListener('message', handleSyncState);
+  }, [iframeRef]);
+
   const handleScroll = (event) => {
     syncAction({
       scroll: {
@@ -36,14 +53,13 @@ const DeviceEmulator = ({ url, device, onRemove, iframeRef, syncAction }) => {
   const handleZoom = (event) => {
     if (event.ctrlKey) {
       event.preventDefault();
-      syncAction({
-        zoom: Math.min(Math.max(0.5, containerRef.current.style.zoom * (event.deltaY > 0 ? 0.9 : 1.1)), 2),
-      });
+      const newZoom = Math.min(Math.max(0.5, containerRef.current.style.zoom * (event.deltaY > 0 ? 0.9 : 1.1)), 2);
+      syncAction({ zoom: newZoom });
     }
   };
 
   return (
-    <Card className="mb-4">
+    <Card className="mb-4 flex-shrink-0">
       <CardContent className="p-4">
         <div className="flex justify-between items-center mb-2">
           <h3 className="text-lg font-semibold">{device.name} - {device.width}x{device.height}</h3>

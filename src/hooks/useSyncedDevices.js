@@ -11,6 +11,14 @@ const useSyncedDevices = (selectedDevices) => {
     const handleMessage = (event) => {
       if (event.data.type === 'SYNC_ACTION') {
         setSyncedState(event.data.payload);
+        Object.values(iframeRefs.current).forEach(iframe => {
+          if (iframe && iframe.contentWindow) {
+            iframe.contentWindow.postMessage({
+              type: 'SYNC_STATE',
+              payload: event.data.payload
+            }, '*');
+          }
+        });
       }
     };
 
@@ -18,19 +26,9 @@ const useSyncedDevices = (selectedDevices) => {
     return () => window.removeEventListener('message', handleMessage);
   }, []);
 
-  useEffect(() => {
-    Object.values(iframeRefs.current).forEach(iframe => {
-      if (iframe && iframe.contentWindow) {
-        iframe.contentWindow.postMessage({
-          type: 'SYNC_STATE',
-          payload: syncedState
-        }, '*');
-      }
-    });
-  }, [syncedState]);
-
   const syncAction = (action) => {
     setSyncedState(prevState => ({ ...prevState, ...action }));
+    window.postMessage({ type: 'SYNC_ACTION', payload: action }, '*');
   };
 
   return { syncedState, syncAction, iframeRefs };
