@@ -21,7 +21,7 @@ const Index = () => {
   const handleDeviceChange = useCallback((device) => {
     setSelectedDevices(prev => {
       const isSelected = prev.some(d => d.name === device.name);
-      return isSelected ? prev.filter(d => d.name !== device.name) : [...prev, device];
+      return isSelected ? prev.filter(d => d.name !== device.name) : [device, ...prev];
     });
   }, []);
   const handleCategoryChange = useCallback((newCategory) => setCategory(newCategory), []);
@@ -35,7 +35,6 @@ const Index = () => {
   }, [category, brand]);
 
   useEffect(() => {
-    // Forzar la recarga de los iframes cuando cambia la URL
     selectedDevices.forEach(device => {
       const iframe = iframeRefs.current[device.name];
       if (iframe) {
@@ -86,7 +85,7 @@ const Index = () => {
                   onBrandChange={handleBrandChange}
                 />
                 <div className="mt-8 overflow-x-auto">
-                  <div className="flex flex-wrap justify-center">
+                  <div className="flex flex-wrap">
                     {selectedDevices.map(device => (
                       <DeviceEmulator 
                         key={device.name} 
