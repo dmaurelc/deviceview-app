@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardBody, CardFooter, Text } from "@nextui-org/react";
+import { Card, CardBody, CardFooter } from "@nextui-org/react";
 
 const DeviceEmulator = ({ url, device }) => {
   return (
@@ -28,9 +28,9 @@ const DeviceEmulator = ({ url, device }) => {
         </div>
       </CardBody>
       <CardFooter className="justify-center">
-        <Text size="sm" color="secondary">
+        <p className="text-sm text-gray-500">
           {device.name} - {device.width}x{device.height}
-        </Text>
+        </p>
       </CardFooter>
     </Card>
   );
