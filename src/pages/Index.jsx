@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
@@ -15,6 +15,7 @@ const Index = () => {
   const [brand, setBrand] = useState('all');
   const { theme, setTheme } = useTheme();
   const { syncedState, syncAction } = useSyncedDevices(selectedDevices);
+  const scrollContainerRef = useRef(null);
 
   const handleUrlChange = useCallback((e) => {
     const newUrl = e.target.value.trim();
@@ -37,6 +38,12 @@ const Index = () => {
       (brand === 'all' || device.brand === brand)
     );
   }, [category, brand]);
+
+  useEffect(() => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollLeft = 0;
+    }
+  }, [selectedDevices]);
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
@@ -71,8 +78,8 @@ const Index = () => {
           />
         </div>
       </div>
-      <div className="w-full overflow-x-auto">
-        <div className="flex space-x-4 pb-4 px-4 sm:px-6 lg:px-8 min-w-max">
+      <div className="w-full overflow-x-auto scrollbar-hide" ref={scrollContainerRef}>
+        <div className="flex space-x-4 pb-4 px-4 sm:px-6 lg:px-8 min-w-max max-w-full">
           {selectedDevices.map(device => (
             <DeviceEmulator 
               key={device.name} 
