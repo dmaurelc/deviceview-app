@@ -76,17 +76,14 @@
   }
 }
 
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+html, body {
+  @apply h-full;
 }
 
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
+#root {
+  @apply min-h-full flex flex-col;
 }
 
-@layer utilities {
-  .transition-bg {
-    transition: background-color 0.3s ease;
-  }
+.transition-bg {
+  transition: background-color 0.3s ease;
 }
