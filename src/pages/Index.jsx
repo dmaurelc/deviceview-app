@@ -1,5 +1,6 @@
-import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import DeviceEmulator from '../components/DeviceEmulator';
@@ -16,18 +17,13 @@ const Index = () => {
   const { theme, setTheme } = useTheme();
   const { syncedState, syncAction } = useSyncedDevices(selectedDevices);
 
-  const handleUrlChange = useCallback((e) => {
-    const newUrl = e.target.value.trim();
-    setUrl(newUrl || 'https://tailwindcss.com');
-  }, []);
-
+  const handleUrlChange = useCallback((e) => setUrl(e.target.value), []);
   const handleDeviceChange = useCallback((device) => {
     setSelectedDevices(prev => {
       const isSelected = prev.some(d => d.name === device.name);
       return isSelected ? prev.filter(d => d.name !== device.name) : [device, ...prev];
     });
   }, []);
-
   const handleCategoryChange = useCallback((newCategory) => setCategory(newCategory), []);
   const handleBrandChange = useCallback((newBrand) => setBrand(newBrand), []);
 
@@ -38,14 +34,8 @@ const Index = () => {
     );
   }, [category, brand]);
 
-  useEffect(() => {
-    if (!url.trim()) {
-      setUrl('https://tailwindcss.com');
-    }
-  }, [url]);
-
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+    <div className="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <h1 className="text-3xl font-bold mb-8">Device Previewer</h1>
         <div className="space-y-6">
@@ -57,6 +47,7 @@ const Index = () => {
               onChange={handleUrlChange}
               className="flex-grow"
             />
+            <Button onClick={() => setUrl(url)}>Load</Button>
             <div className="flex items-center space-x-2">
               <Switch
                 id="dark-mode"
