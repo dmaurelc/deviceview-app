@@ -2,29 +2,29 @@ import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { brands } from '../utils/devices';
+import { brands, categories } from '../utils/devices';
 
 const DeviceSelector = ({ devices, selectedDevices, onSelectDevice, category, onCategoryChange, brand, onBrandChange }) => {
   return (
-    <Card className="w-full">
+    <Card className="w-full mb-4">
       <CardHeader>
         <CardTitle>Seleccionar Dispositivos</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="flex gap-4 mb-4">
+        <div className="flex flex-wrap gap-2 mb-4">
           <Select value={category} onValueChange={onCategoryChange}>
-            <SelectTrigger>
+            <SelectTrigger className="w-[150px]">
               <SelectValue placeholder="Categoría" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Todos</SelectItem>
-              <SelectItem value="mobile">Móvil</SelectItem>
-              <SelectItem value="tablet">Tablet</SelectItem>
-              <SelectItem value="desktop">Desktop</SelectItem>
+              <SelectItem value="all">Todas</SelectItem>
+              {categories.map((cat) => (
+                <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+              ))}
             </SelectContent>
           </Select>
           <Select value={brand} onValueChange={onBrandChange}>
-            <SelectTrigger>
+            <SelectTrigger className="w-[150px]">
               <SelectValue placeholder="Marca" />
             </SelectTrigger>
             <SelectContent>
@@ -35,7 +35,7 @@ const DeviceSelector = ({ devices, selectedDevices, onSelectDevice, category, on
             </SelectContent>
           </Select>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
           {devices.map((device) => (
             <Button
               key={device.name}

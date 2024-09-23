@@ -49,7 +49,7 @@ const Index = () => {
           <Label htmlFor="dark-mode">Modo Oscuro</Label>
         </div>
       </div>
-      <div className="flex gap-4 mb-8">
+      <div className="flex gap-4 mb-4">
         <Input
           type="url"
           placeholder="Ingrese URL para previsualizar"
@@ -68,7 +68,7 @@ const Index = () => {
         brand={brand}
         onBrandChange={handleBrandChange}
       />
-      <div className="mt-8">
+      <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {selectedDevices.map(device => (
           <DeviceEmulator 
             key={device.name} 
