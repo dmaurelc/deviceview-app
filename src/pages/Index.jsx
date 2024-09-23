@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -12,8 +12,6 @@ import useSyncedDevices from '../hooks/useSyncedDevices';
 const Index = () => {
   const [url, setUrl] = useState('https://tailwindcss.com');
   const [selectedDevices, setSelectedDevices] = useState([]);
-  const [category, setCategory] = useState('all');
-  const [brand, setBrand] = useState('all');
   const { theme, setTheme } = useTheme();
   const { syncedState, syncAction, iframeRefs } = useSyncedDevices(selectedDevices);
 
@@ -24,24 +22,10 @@ const Index = () => {
       return isSelected ? prev.filter(d => d.name !== device.name) : [device, ...prev];
     });
   }, []);
-  const handleCategoryChange = useCallback((newCategory) => setCategory(newCategory), []);
-  const handleBrandChange = useCallback((newBrand) => setBrand(newBrand), []);
 
-  const filteredDevices = useMemo(() => {
-    return devices.filter(device => 
-      (category === 'all' || device.category === category) &&
-      (brand === 'all' || device.brand === brand)
-    );
-  }, [category, brand]);
-
-  useEffect(() => {
-    selectedDevices.forEach(device => {
-      const iframe = iframeRefs.current[device.name];
-      if (iframe) {
-        iframe.src = url;
-      }
-    });
-  }, [url, selectedDevices, iframeRefs]);
+  const sortedDevices = useMemo(() => {
+    return [...selectedDevices].sort((a, b) => b.width - a.width);
+  }, [selectedDevices]);
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
@@ -75,18 +59,15 @@ const Index = () => {
                     <Label htmlFor="dark-mode" className="ml-2">Modo Oscuro</Label>
                   </div>
                 </div>
-                <DeviceSelector
-                  devices={filteredDevices}
-                  selectedDevices={selectedDevices}
-                  onSelectDevice={handleDeviceChange}
-                  category={category}
-                  onCategoryChange={handleCategoryChange}
-                  brand={brand}
-                  onBrandChange={handleBrandChange}
-                />
+                <div className="mb-4">
+                  <DeviceSelector
+                    selectedDevices={selectedDevices}
+                    onSelectDevice={handleDeviceChange}
+                  />
+                </div>
                 <div className="mt-8 overflow-x-auto">
                   <div className="flex flex-wrap">
-                    {selectedDevices.map(device => (
+                    {sortedDevices.map(device => (
                       <DeviceEmulator 
                         key={device.name} 
                         url={url} 

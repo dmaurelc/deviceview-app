@@ -1,73 +1,59 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { brands, categories } from '../utils/devices';
-import { getBrandIcon } from '../utils/brandIcons';
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Check, ChevronDown, Smartphone, Tablet, Laptop } from 'lucide-react';
+import { cn } from "@/lib/utils";
+import { devices } from '../utils/devices';
 
-const DeviceSelector = ({ devices, selectedDevices, onSelectDevice, category, onCategoryChange, brand, onBrandChange }) => {
+const DeviceSelector = ({ selectedDevices, onSelectDevice }) => {
+  const [open, setOpen] = useState(false);
+
+  const getDeviceIcon = (category) => {
+    switch (category) {
+      case 'mobile': return <Smartphone className="mr-2 h-4 w-4" />;
+      case 'tablet': return <Tablet className="mr-2 h-4 w-4" />;
+      case 'laptop': return <Laptop className="mr-2 h-4 w-4" />;
+      default: return <Smartphone className="mr-2 h-4 w-4" />;
+    }
+  };
+
   return (
-    <Card className="w-full mb-4">
-      <CardHeader>
-        <CardTitle>Seleccionar Dispositivos</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="flex flex-wrap gap-4 mb-4">
-          <div className="flex-1 min-w-[200px]">
-            <h3 className="text-sm font-semibold mb-2">Marca</h3>
-            <Select value={brand} onValueChange={onBrandChange}>
-              <SelectTrigger>
-                <SelectValue placeholder="Marca" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Todas</SelectItem>
-                {brands.map((brand) => {
-                  const BrandIcon = getBrandIcon(brand);
-                  return (
-                    <SelectItem key={brand} value={brand}>
-                      <div className="flex items-center">
-                        <BrandIcon className="mr-2 h-4 w-4" />
-                        {brand}
-                      </div>
-                    </SelectItem>
-                  );
-                })}
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="flex-1 min-w-[200px]">
-            <h3 className="text-sm font-semibold mb-2">Modelo</h3>
-            <Select value={category} onValueChange={onCategoryChange}>
-              <SelectTrigger>
-                <SelectValue placeholder="Modelo" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Todos</SelectItem>
-                {categories.map((cat) => (
-                  <SelectItem key={cat} value={cat}>{cat}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          role="combobox"
+          aria-expanded={open}
+          className="w-[200px] justify-between"
+        >
+          Add Device
+          <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-[200px] p-0">
+        <div className="max-h-[300px] overflow-auto">
+          {devices.map((device) => (
+            <Button
+              key={device.name}
+              onClick={() => {
+                onSelectDevice(device);
+                setOpen(false);
+              }}
+              className={cn(
+                "w-full justify-start text-left text-sm",
+                selectedDevices.some(d => d.name === device.name) ? "bg-accent" : "bg-transparent"
+              )}
+            >
+              {getDeviceIcon(device.category)}
+              {device.name}
+              {selectedDevices.some(d => d.name === device.name) && (
+                <Check className="ml-auto h-4 w-4" />
+              )}
+            </Button>
+          ))}
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
-          {devices.map((device) => {
-            const DeviceIcon = getBrandIcon(device.brand);
-            return (
-              <Button
-                key={device.name}
-                variant={selectedDevices.some(d => d.name === device.name) ? "default" : "outline"}
-                className="w-full justify-start text-left text-xs"
-                onClick={() => onSelectDevice(device)}
-              >
-                <DeviceIcon className="mr-2 h-4 w-4" />
-                {device.name}
-              </Button>
-            );
-          })}
-        </div>
-      </CardContent>
-    </Card>
+      </PopoverContent>
+    </Popover>
   );
 };
 
