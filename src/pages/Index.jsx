@@ -1,6 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Input, Button, Container, Grid, Text } from "@nextui-org/react";
 import DeviceEmulator from '../components/DeviceEmulator';
 import DeviceSelector from '../components/DeviceSelector';
 import { devices } from '../utils/devices';
@@ -20,29 +19,39 @@ const Index = () => {
   }, [category]);
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Emulador de Dispositivos</h1>
-      <div className="flex gap-4 mb-4">
-        <Input
-          type="url"
-          placeholder="Ingrese URL para previsualizar"
-          value={url}
-          onChange={handleUrlChange}
-          className="flex-grow"
-        />
-        <Button onClick={() => setUrl(url)}>Cargar</Button>
-      </div>
-      <div className="flex flex-col md:flex-row gap-4">
-        <DeviceSelector
-          devices={filteredDevices}
-          selectedDevice={selectedDevice}
-          onSelectDevice={handleDeviceChange}
-          category={category}
-          onCategoryChange={handleCategoryChange}
-        />
-        <DeviceEmulator url={url} device={selectedDevice} />
-      </div>
-    </div>
+    <Container fluid className="py-8">
+      <Text h1 className="text-center mb-8">Emulador de Dispositivos</Text>
+      <Grid.Container gap={2} justify="center">
+        <Grid xs={12} md={8}>
+          <Input
+            type="url"
+            placeholder="Ingrese URL para previsualizar"
+            value={url}
+            onChange={handleUrlChange}
+            width="100%"
+            contentRight={
+              <Button auto onClick={() => setUrl(url)}>
+                Cargar
+              </Button>
+            }
+          />
+        </Grid>
+      </Grid.Container>
+      <Grid.Container gap={4} className="mt-8">
+        <Grid xs={12} md={3}>
+          <DeviceSelector
+            devices={filteredDevices}
+            selectedDevice={selectedDevice}
+            onSelectDevice={handleDeviceChange}
+            category={category}
+            onCategoryChange={handleCategoryChange}
+          />
+        </Grid>
+        <Grid xs={12} md={9}>
+          <DeviceEmulator url={url} device={selectedDevice} />
+        </Grid>
+      </Grid.Container>
+    </Container>
   );
 };
 
