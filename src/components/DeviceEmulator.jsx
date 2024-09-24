@@ -47,7 +47,7 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction, theme }) => {
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden flex-shrink-0 snap-center" style={{ width: `${deviceWidth}px`, height: `${deviceHeight + 40}px` }}>
-      <div className="bg-gray-100 dark:bg-gray-700 p-2 text-sm font-medium flex justify-between items-center">
+      <div className="bg-gray-800 dark:bg-gray-900 p-2 text-sm font-medium flex justify-between items-center text-white">
         <span>{`${device.name} (${deviceWidth} x ${deviceHeight})`}</span>
         <div className="flex items-center space-x-2">
           <Button variant="ghost" size="sm" onClick={handleRotate}>
@@ -64,7 +64,7 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction, theme }) => {
           src={url}
           title={`Preview on ${device.name}`}
           className="w-full h-full border-0"
-          style={{ transform: isRotated ? 'rotate(90deg) scale(1, -1)' : 'none', transformOrigin: 'top left', width: isRotated ? `${deviceHeight}px` : '100%', height: isRotated ? `${deviceWidth}px` : '100%' }}
+          style={{ width: '100%', height: '100%' }}
         />
       </div>
     </div>
