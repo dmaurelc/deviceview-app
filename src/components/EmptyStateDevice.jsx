@@ -7,7 +7,7 @@ const EmptyStateDevice = ({ onSelectDevice }) => {
   const defaultDevice = devices.find(device => device.name === 'iPhone 12 Pro');
 
   return (
-    <div className="flex flex-col items-center justify-center w-full h-full bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg p-8">
+    <div className="flex flex-col items-center justify-center w-full h-full bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg p-8 border border-gray-200 dark:border-gray-700">
       <Smartphone className="w-16 h-16 text-gray-400 mb-4" />
       <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">No devices selected</h2>
       <p className="text-gray-600 dark:text-gray-400 text-center mb-6">

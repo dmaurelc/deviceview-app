@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Smartphone, Tablet, Monitor, ChevronRight, ChevronLeft } from 'lucide-react';
+import { Smartphone, Tablet, Monitor } from 'lucide-react';
 import { devices, categories } from '../utils/devices';
 import {
   Accordion,
@@ -18,16 +18,13 @@ const Sidebar = ({
   url,
   onUrlChange
 }) => {
-  const [isMobileView, setIsMobileView] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobileView(window.innerWidth < 768);
-    };
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
+  const handleUrlChange = (e) => {
+    let value = e.target.value;
+    if (!value.startsWith('https://') && value !== '') {
+      value = 'https://' + value;
+    }
+    onUrlChange(value);
+  };
 
   const getCategoryIcon = (category) => {
     switch (category) {
@@ -38,23 +35,15 @@ const Sidebar = ({
     }
   };
 
-  const handleUrlChange = (e) => {
-    let value = e.target.value;
-    if (!value.startsWith('https://') && value !== '') {
-      value = 'https://' + value;
-    }
-    onUrlChange(value);
-  };
-
   if (!isOpen) return null;
 
   return (
-    <div className="sidebar fixed top-16 left-0 z-50 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 transition-all duration-300 h-full flex flex-col w-64">
+    <div className={`sidebar fixed top-16 left-0 z-50 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 transition-all duration-300 h-[calc(100vh-4rem)] flex flex-col w-64 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
       <div className="flex flex-col h-full">
         <div className="p-4 flex justify-between items-center border-b border-gray-200 dark:border-gray-800">
           <h2 className="text-lg font-semibold font-outfit">Devices</h2>
         </div>
-        {isMobileView && (
+        {isMobile && (
           <div className="p-4 border-b border-gray-200 dark:border-gray-800">
             <Input
               type="text"
