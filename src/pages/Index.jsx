@@ -1,10 +1,9 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useTheme } from 'next-themes';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import DeviceEmulator from '../components/DeviceEmulator';
 import useSyncedDevices from '../hooks/useSyncedDevices';
-import { devices } from '../utils/devices';
 
 const Index = () => {
   const [url, setUrl] = useState('https://tailwindcss.com');
@@ -28,7 +27,6 @@ const Index = () => {
       <Sidebar
         url={url}
         onUrlChange={handleUrlChange}
-        devices={devices}
         selectedDevices={selectedDevices}
         onSelectDevice={handleDeviceChange}
       />
