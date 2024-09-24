@@ -23,15 +23,15 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
-      <Sidebar
-        url={url}
-        onUrlChange={handleUrlChange}
-        selectedDevices={selectedDevices}
-        onSelectDevice={handleDeviceChange}
-      />
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <Header theme={theme} setTheme={setTheme} />
+    <div className="flex flex-col h-screen bg-gray-100 dark:bg-gray-900">
+      <Header theme={theme} setTheme={setTheme} />
+      <div className="flex flex-1 overflow-hidden">
+        <Sidebar
+          url={url}
+          onUrlChange={handleUrlChange}
+          selectedDevices={selectedDevices}
+          onSelectDevice={handleDeviceChange}
+        />
         <main className="flex-1 bg-gray-100 dark:bg-gray-800 overflow-x-auto">
           <div className="p-6 h-full flex items-start space-x-6 snap-x snap-mandatory">
             {selectedDevices.map(device => (
