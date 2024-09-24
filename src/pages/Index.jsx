@@ -51,7 +51,7 @@ const Index = () => {
         toggleSidebar={toggleSidebar}
         isMobile={isMobile}
       />
-      <div className="flex flex-1 overflow-hidden relative pt-16">
+      <div className="flex flex-1 overflow-hidden relative">
         <Sidebar
           isOpen={isSidebarOpen}
           selectedDevices={selectedDevices}
