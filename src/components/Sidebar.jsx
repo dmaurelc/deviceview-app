@@ -38,19 +38,27 @@ const Sidebar = ({
     }
   };
 
+  const handleUrlChange = (e) => {
+    let value = e.target.value;
+    if (!value.startsWith('https://') && value !== '') {
+      value = 'https://' + value;
+    }
+    onUrlChange(value);
+  };
+
   return (
     <div className={`fixed top-16 left-0 z-50 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 transition-all duration-300 h-full flex flex-col w-64 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
       <div className="p-4 flex justify-between items-center border-b border-gray-200 dark:border-gray-800">
-        <h2 className="text-lg font-semibold">Devices</h2>
+        <h2 className="text-lg font-semibold font-outfit">Devices</h2>
       </div>
       {isMobileView && (
         <div className="p-4 border-b border-gray-200 dark:border-gray-800">
           <Input
-            type="url"
-            placeholder="Enter site URL to preview"
-            value={url}
-            onChange={(e) => onUrlChange(e.target.value)}
-            className="w-full"
+            type="text"
+            placeholder="Enter site URL"
+            value={url.startsWith('https://') ? url.slice(8) : url}
+            onChange={handleUrlChange}
+            className="w-full font-outfit"
           />
         </div>
       )}
@@ -58,7 +66,7 @@ const Sidebar = ({
         <Accordion type="single" collapsible className="w-full">
           {categories.map((category) => (
             <AccordionItem key={category} value={category}>
-              <AccordionTrigger className="text-md font-medium">
+              <AccordionTrigger className="text-md font-medium font-outfit">
                 <div className="flex items-center w-full">
                   <span className="mr-2">{getCategoryIcon(category)}</span>
                   <span className="flex-grow text-left">
@@ -74,7 +82,7 @@ const Sidebar = ({
                       <Button
                         key={device.name}
                         variant={selectedDevices.some(d => d.name === device.name) ? "default" : "outline"}
-                        className="w-full justify-start text-left text-sm"
+                        className="w-full justify-start text-left text-sm font-outfit"
                         onClick={() => onSelectDevice(device)}
                       >
                         {device.name}
@@ -87,7 +95,7 @@ const Sidebar = ({
           ))}
         </Accordion>
       </div>
-      <div className="p-4 border-t border-gray-200 dark:border-gray-800 text-center text-sm text-gray-500 dark:text-gray-400">
+      <div className="p-4 border-t border-gray-200 dark:border-gray-800 text-center text-sm text-gray-500 dark:text-gray-400 font-outfit">
         DeviceView - Created with AI
       </div>
     </div>
