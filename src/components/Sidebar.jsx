@@ -11,12 +11,10 @@ import {
 } from "@/components/ui/accordion";
 
 const Sidebar = ({ 
-  url, 
-  onUrlChange, 
+  isOpen,
   selectedDevices, 
   onSelectDevice,
 }) => {
-  const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -37,41 +35,12 @@ const Sidebar = ({
     }
   };
 
-  if (isCollapsed) {
-    return (
-      <Button
-        variant="secondary"
-        size="icon"
-        className="fixed top-20 left-0 z-50 m-2 bg-primary text-primary-foreground"
-        onClick={() => setIsCollapsed(false)}
-      >
-        <ChevronRight className="h-4 w-4" />
-      </Button>
-    );
-  }
-
   return (
-    <div className="bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 transition-all duration-300 h-full flex flex-col w-64">
+    <div className={`fixed top-16 left-0 z-50 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 transition-all duration-300 h-full flex flex-col w-64 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
       <div className="p-4 flex justify-between items-center border-b border-gray-200 dark:border-gray-800">
         <h2 className="text-lg font-semibold">Devices</h2>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => setIsCollapsed(true)}
-        >
-          <ChevronLeft className="h-4 w-4" />
-        </Button>
       </div>
       <div className="p-4 space-y-4 overflow-y-auto flex-grow">
-        {isMobile && (
-          <Input
-            type="url"
-            placeholder="Enter URL to preview"
-            value={url}
-            onChange={(e) => onUrlChange(e.target.value)}
-            className="w-full mb-4"
-          />
-        )}
         <Accordion type="single" collapsible className="w-full">
           {categories.map((category) => (
             <AccordionItem key={category} value={category}>

@@ -9,6 +9,7 @@ import useSyncedDevices from '../hooks/useSyncedDevices';
 const Index = () => {
   const [url, setUrl] = useState('');
   const [selectedDevices, setSelectedDevices] = useState([]);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const { theme, setTheme } = useTheme();
   const { syncAction } = useSyncedDevices(selectedDevices);
 
@@ -23,15 +24,20 @@ const Index = () => {
     });
   }, []);
 
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
   return (
     <div className="flex flex-col h-screen bg-gray-100 dark:bg-gray-900">
-      <Header theme={theme} setTheme={setTheme} url={url} onUrlChange={handleUrlChange} />
-      <div className="flex flex-1 overflow-hidden">
+      <Header theme={theme} setTheme={setTheme} url={url} onUrlChange={handleUrlChange} toggleSidebar={toggleSidebar} />
+      <div className="flex flex-1 overflow-hidden relative">
         <Sidebar
+          isOpen={isSidebarOpen}
           selectedDevices={selectedDevices}
           onSelectDevice={handleDeviceChange}
         />
-        <main className="flex-1 bg-gray-100 dark:bg-gray-800 overflow-x-auto">
+        <main className={`flex-1 bg-gray-100 dark:bg-gray-800 overflow-x-auto transition-all duration-300 ${isSidebarOpen ? 'ml-64' : 'ml-0'}`}>
           <div className="p-6 h-full flex items-start space-x-6 snap-x snap-mandatory">
             {selectedDevices.length > 0 ? (
               selectedDevices.map(device => (
