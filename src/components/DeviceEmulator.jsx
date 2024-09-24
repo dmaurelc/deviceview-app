@@ -45,20 +45,34 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction, theme }) => {
   const deviceWidth = isRotated ? device.height : device.width;
   const deviceHeight = isRotated ? device.width : device.height;
 
+  const isAppleDevice = device.brand === 'Apple';
+  const headerStyle = isAppleDevice
+    ? 'bg-gray-100 dark:bg-gray-800'
+    : 'bg-gray-200 dark:bg-gray-700';
+  const buttonStyle = isAppleDevice
+    ? 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+    : 'text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100';
+
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden flex-shrink-0 snap-center" style={{ width: `${deviceWidth}px`, height: `${deviceHeight + 28}px` }}>
-      <div className="bg-gray-200 dark:bg-gray-700 h-7 flex items-center justify-between px-2 text-xs font-medium text-gray-600 dark:text-gray-300">
+      <div className={`${headerStyle} h-7 flex items-center justify-between px-2 text-xs font-medium`}>
         <div className="flex items-center space-x-1.5">
-          <div className="w-2.5 h-2.5 rounded-full bg-red-500"></div>
-          <div className="w-2.5 h-2.5 rounded-full bg-yellow-500"></div>
-          <div className="w-2.5 h-2.5 rounded-full bg-green-500"></div>
+          {isAppleDevice ? (
+            <>
+              <div className="w-2.5 h-2.5 rounded-full bg-red-500"></div>
+              <div className="w-2.5 h-2.5 rounded-full bg-yellow-500"></div>
+              <div className="w-2.5 h-2.5 rounded-full bg-green-500"></div>
+            </>
+          ) : (
+            <div className="w-2.5 h-2.5 rounded-full bg-gray-400"></div>
+          )}
         </div>
-        <span className="truncate max-w-[150px]">{url}</span>
+        <span className="truncate max-w-[150px]">{`${device.name} (${deviceWidth}x${deviceHeight})`}</span>
         <div className="flex items-center space-x-2">
-          <Button variant="ghost" size="icon" className="h-5 w-5 p-0" onClick={handleRotate}>
+          <Button variant="ghost" size="icon" className={`h-5 w-5 p-0 ${buttonStyle}`} onClick={handleRotate}>
             <RotateCcw size={14} />
           </Button>
-          <Button variant="ghost" size="icon" className="h-5 w-5 p-0" onClick={() => onRemove(device)}>
+          <Button variant="ghost" size="icon" className={`h-5 w-5 p-0 ${buttonStyle}`} onClick={() => onRemove(device)}>
             <X size={14} />
           </Button>
         </div>
