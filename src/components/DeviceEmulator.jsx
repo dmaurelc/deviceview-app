@@ -54,7 +54,13 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction, theme }) => {
     : 'text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100';
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden flex-shrink-0 snap-center" style={{ width: `${deviceWidth}px`, height: `${deviceHeight + 28}px` }}>
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden flex-shrink-0 snap-center" style={{ width: `${deviceWidth}px` }}>
+      <div className="p-2 border-b border-gray-200 dark:border-gray-700">
+        <div className="flex justify-between items-center text-sm font-medium">
+          <span>{device.name}</span>
+          <span>{deviceWidth}x{deviceHeight}</span>
+        </div>
+      </div>
       <div className={`${headerStyle} h-7 flex items-center justify-between px-2 text-xs font-medium`}>
         <div className="flex items-center space-x-1.5">
           {isAppleDevice ? (
@@ -67,7 +73,7 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction, theme }) => {
             <div className="w-2.5 h-2.5 rounded-full bg-gray-400"></div>
           )}
         </div>
-        <span className="truncate max-w-[150px]">{`${device.name} (${deviceWidth}x${deviceHeight})`}</span>
+        <span className="truncate max-w-[150px]">{url}</span>
         <div className="flex items-center space-x-2">
           <Button variant="ghost" size="icon" className={`h-5 w-5 p-0 ${buttonStyle}`} onClick={handleRotate}>
             <RotateCcw size={14} />
@@ -77,7 +83,7 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction, theme }) => {
           </Button>
         </div>
       </div>
-      <div style={{ height: `${deviceHeight - 28}px`, width: `${deviceWidth}px`, overflow: 'hidden' }}>
+      <div style={{ height: `${deviceHeight}px`, width: `${deviceWidth}px`, overflow: 'hidden' }}>
         <iframe
           ref={iframeRef}
           src={url}
