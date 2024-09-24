@@ -28,14 +28,14 @@ const Sidebar = ({
   };
 
   return (
-    <div className={`bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 transition-all duration-300 ${isCollapsed ? 'w-16' : 'w-64'} h-full flex flex-col`}>
+    <div className={`bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 transition-all duration-300 h-full flex flex-col ${isCollapsed ? 'w-16' : 'w-64'}`}>
       <Button
         variant="ghost"
         size="icon"
-        className="self-end m-2"
+        className={`self-end m-2 ${isCollapsed ? 'rotate-180' : ''}`}
         onClick={() => setIsCollapsed(!isCollapsed)}
       >
-        {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+        <ChevronLeft className="h-4 w-4" />
       </Button>
       {!isCollapsed && (
         <div className="p-6 space-y-6 overflow-y-auto flex-grow">
@@ -57,7 +57,7 @@ const Sidebar = ({
                   <AccordionTrigger className="text-md font-medium">
                     <div className="flex items-center w-full">
                       <span className="mr-2">{getCategoryIcon(category)}</span>
-                      <span className="flex-grow text-center">
+                      <span className="flex-grow text-left">
                         {category.charAt(0).toUpperCase() + category.slice(1)}
                       </span>
                     </div>
