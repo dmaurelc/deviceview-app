@@ -14,12 +14,15 @@ const Sidebar = ({
   isOpen,
   selectedDevices, 
   onSelectDevice,
+  isMobile,
+  url,
+  onUrlChange
 }) => {
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobileView, setIsMobileView] = useState(false);
 
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
+      setIsMobileView(window.innerWidth < 768);
     };
     checkMobile();
     window.addEventListener('resize', checkMobile);
@@ -40,6 +43,17 @@ const Sidebar = ({
       <div className="p-4 flex justify-between items-center border-b border-gray-200 dark:border-gray-800">
         <h2 className="text-lg font-semibold">Devices</h2>
       </div>
+      {isMobileView && (
+        <div className="p-4 border-b border-gray-200 dark:border-gray-800">
+          <Input
+            type="url"
+            placeholder="Enter site URL to preview"
+            value={url}
+            onChange={(e) => onUrlChange(e.target.value)}
+            className="w-full"
+          />
+        </div>
+      )}
       <div className="p-4 space-y-4 overflow-y-auto flex-grow">
         <Accordion type="single" collapsible className="w-full">
           {categories.map((category) => (
