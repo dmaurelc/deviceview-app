@@ -1,23 +1,31 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { X, RotateCcw } from 'lucide-react';
 import { Button } from "@/components/ui/button";
+import TemporaryUrlPlaceholder from './TemporaryUrlPlaceholder';
 
 const DeviceEmulator = ({ url, device, onRemove, syncAction, theme }) => {
   const iframeRef = useRef(null);
   const [isRotated, setIsRotated] = useState(false);
+  const [isValidUrl, setIsValidUrl] = useState(true);
 
   useEffect(() => {
     const iframe = iframeRef.current;
     if (iframe) {
       const handleLoad = () => {
         iframe.contentWindow.postMessage({ type: 'INIT_LISTENERS', theme }, '*');
+        setIsValidUrl(true);
+      };
+      const handleError = () => {
+        setIsValidUrl(false);
       };
       iframe.addEventListener('load', handleLoad);
+      iframe.addEventListener('error', handleError);
       return () => {
         iframe.removeEventListener('load', handleLoad);
+        iframe.removeEventListener('error', handleError);
       };
     }
-  }, [theme]);
+  }, [theme, url]);
 
   useEffect(() => {
     const handleMessage = (event) => {
@@ -47,6 +55,15 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction, theme }) => {
 
   const canRotate = device.category === 'mobile' || device.category === 'tablet';
 
+  const isValidURL = (string) => {
+    try {
+      new URL(string);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  };
+
   return (
     <div className="flex flex-col gap-2">
       <div className="rounded-t-lg">
@@ -75,13 +92,17 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction, theme }) => {
           </div>
         </div>
         <div style={{ height: `${deviceHeight}px`, width: `${deviceWidth}px`, overflow: 'hidden' }}>
-          <iframe
-            ref={iframeRef}
-            src={url}
-            title={`Preview on ${device.name}`}
-            className="w-full h-full border-0"
-            style={{ width: '100%', height: '100%' }}
-          />
+          {isValidURL(url) && isValidUrl ? (
+            <iframe
+              ref={iframeRef}
+              src={url}
+              title={`Preview on ${device.name}`}
+              className="w-full h-full border-0"
+              style={{ width: '100%', height: '100%' }}
+            />
+          ) : (
+            <TemporaryUrlPlaceholder />
+          )}
         </div>
       </div>
     </div>
