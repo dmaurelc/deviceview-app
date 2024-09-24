@@ -30,12 +30,12 @@ const Index = () => {
   const handleDeviceChange = useCallback((device) => {
     setSelectedDevices(prev => {
       const isSelected = prev.some(d => d.name === device.name);
-      return isSelected ? prev.filter(d => d.name !== device.name) : [device, ...prev];
+      return isSelected ? prev.filter(d => d.name !== device.name) : [...prev, device];
     });
   }, []);
 
   const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
+    setIsSidebarOpen(prev => !prev);
   };
 
   const handleOutsideClick = (e) => {
@@ -55,14 +55,15 @@ const Index = () => {
         isMobile={isMobile}
       />
       <div className="flex flex-1 overflow-hidden relative">
-        <Sidebar
-          isOpen={isSidebarOpen}
-          selectedDevices={selectedDevices}
-          onSelectDevice={handleDeviceChange}
-          isMobile={isMobile}
-          url={url}
-          onUrlChange={handleUrlChange}
-        />
+        {isSidebarOpen && (
+          <Sidebar
+            selectedDevices={selectedDevices}
+            onSelectDevice={handleDeviceChange}
+            isMobile={isMobile}
+            url={url}
+            onUrlChange={handleUrlChange}
+          />
+        )}
         <main className={`flex-1 bg-gray-100 dark:bg-gray-800 overflow-x-auto transition-all duration-300 ${isSidebarOpen && !isMobile ? 'ml-64' : ''}`}>
           <div className="p-6 h-full flex items-start space-x-6 snap-x snap-mandatory">
             {selectedDevices.length > 0 ? (
