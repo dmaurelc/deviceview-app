@@ -43,14 +43,16 @@ const Index = () => {
 
   return (
     <div className="flex flex-col h-screen bg-gray-100 dark:bg-gray-900 font-outfit">
-      <Header 
-        theme={theme} 
-        setTheme={setTheme} 
-        url={url} 
-        onUrlChange={handleUrlChange} 
-        toggleSidebar={toggleSidebar}
-        isMobile={isMobile}
-      />
+      <div className="z-50 relative">
+        <Header 
+          theme={theme} 
+          setTheme={setTheme} 
+          url={url} 
+          onUrlChange={handleUrlChange} 
+          toggleSidebar={toggleSidebar}
+          isMobile={isMobile}
+        />
+      </div>
       <div className="flex flex-1 overflow-hidden relative">
         <Sidebar
           isOpen={isSidebarOpen}
