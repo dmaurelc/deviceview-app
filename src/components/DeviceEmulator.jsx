@@ -46,19 +46,24 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction, theme }) => {
   const deviceHeight = isRotated ? device.width : device.height;
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden flex-shrink-0 snap-center" style={{ width: `${deviceWidth}px`, height: `${deviceHeight + 40}px` }}>
-      <div className="bg-gray-800 dark:bg-gray-900 p-2 text-sm font-medium flex justify-between items-center text-white">
-        <span>{`${device.name} (${deviceWidth} x ${deviceHeight})`}</span>
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden flex-shrink-0 snap-center" style={{ width: `${deviceWidth}px`, height: `${deviceHeight + 28}px` }}>
+      <div className="bg-gray-200 dark:bg-gray-700 h-7 flex items-center justify-between px-2 text-xs font-medium text-gray-600 dark:text-gray-300">
+        <div className="flex items-center space-x-1.5">
+          <div className="w-2.5 h-2.5 rounded-full bg-red-500"></div>
+          <div className="w-2.5 h-2.5 rounded-full bg-yellow-500"></div>
+          <div className="w-2.5 h-2.5 rounded-full bg-green-500"></div>
+        </div>
+        <span className="truncate max-w-[150px]">{url}</span>
         <div className="flex items-center space-x-2">
-          <Button variant="ghost" size="sm" onClick={handleRotate}>
-            <RotateCcw size={18} />
+          <Button variant="ghost" size="icon" className="h-5 w-5 p-0" onClick={handleRotate}>
+            <RotateCcw size={14} />
           </Button>
-          <Button variant="ghost" size="sm" onClick={() => onRemove(device)}>
-            <X size={18} />
+          <Button variant="ghost" size="icon" className="h-5 w-5 p-0" onClick={() => onRemove(device)}>
+            <X size={14} />
           </Button>
         </div>
       </div>
-      <div style={{ height: `${deviceHeight}px`, width: `${deviceWidth}px`, overflow: 'hidden' }}>
+      <div style={{ height: `${deviceHeight - 28}px`, width: `${deviceWidth}px`, overflow: 'hidden' }}>
         <iframe
           ref={iframeRef}
           src={url}
