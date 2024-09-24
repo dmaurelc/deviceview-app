@@ -40,7 +40,7 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction, theme }) => {
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden flex-shrink-0 snap-center" style={{ width: `${device.width}px`, height: `${device.height + 40}px` }}>
       <div className="bg-gray-100 dark:bg-gray-700 p-2 text-sm font-medium flex justify-between items-center">
-        <span>{device.name}</span>
+        <span>{`${device.name} (${device.width} x ${device.height})`}</span>
         <Button variant="ghost" size="sm" onClick={() => onRemove(device)}>
           <X size={18} />
         </Button>

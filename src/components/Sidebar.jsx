@@ -3,6 +3,12 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Smartphone, Tablet, Monitor } from 'lucide-react';
 import { devices, categories } from '../utils/devices';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 const Sidebar = ({ 
   url, 
@@ -33,29 +39,33 @@ const Sidebar = ({
       </div>
       <div>
         <h2 className="text-lg font-semibold mb-2">Devices</h2>
-        {categories.map((category) => (
-          <div key={category} className="mb-4">
-            <h3 className="text-md font-medium mb-2 flex items-center">
-              {getCategoryIcon(category)}
-              {category.charAt(0).toUpperCase() + category.slice(1)}
-            </h3>
-            <div className="space-y-2">
-              {devices
-                .filter(device => device.category === category)
-                .map((device) => (
-                  <Button
-                    key={device.name}
-                    variant={selectedDevices.some(d => d.name === device.name) ? "default" : "outline"}
-                    className="w-full justify-start text-left text-sm"
-                    onClick={() => onSelectDevice(device)}
-                  >
-                    {device.name}
-                  </Button>
-                ))
-              }
-            </div>
-          </div>
-        ))}
+        <Accordion type="single" collapsible className="w-full">
+          {categories.map((category) => (
+            <AccordionItem key={category} value={category}>
+              <AccordionTrigger className="text-md font-medium flex items-center">
+                {getCategoryIcon(category)}
+                {category.charAt(0).toUpperCase() + category.slice(1)}
+              </AccordionTrigger>
+              <AccordionContent>
+                <div className="space-y-2">
+                  {devices
+                    .filter(device => device.category === category)
+                    .map((device) => (
+                      <Button
+                        key={device.name}
+                        variant={selectedDevices.some(d => d.name === device.name) ? "default" : "outline"}
+                        className="w-full justify-start text-left text-sm"
+                        onClick={() => onSelectDevice(device)}
+                      >
+                        {device.name}
+                      </Button>
+                    ))
+                  }
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
       </div>
     </div>
   );
