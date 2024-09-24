@@ -73,7 +73,7 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction, theme }) => {
         </div>
       </div>
       <div className="flex flex-col bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden flex-shrink-0 snap-center" style={{ width: `${deviceWidth}px` }}>
-        <div className="bg-gray-100 dark:bg-gray-800 h-7 flex items-center justify-between px-2 text-xs font-medium">
+        <div className="bg-gray-50 dark:bg-slate-900 h-7 flex items-center justify-between px-2 text-xs font-medium">
           <div className="flex items-center space-x-1.5">
             <div className="w-2.5 h-2.5 rounded-full bg-red-500"></div>
             <div className="w-2.5 h-2.5 rounded-full bg-yellow-500"></div>
