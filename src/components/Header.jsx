@@ -3,6 +3,7 @@ import { Moon, Sun } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import Logo from './Logo';
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 const Header = ({ theme, setTheme, url, onUrlChange }) => {
   const [isMobile, setIsMobile] = useState(false);
@@ -26,13 +27,19 @@ const Header = ({ theme, setTheme, url, onUrlChange }) => {
           </div>
           <div className="flex items-center space-x-4">
             {!isMobile && (
-              <Input
-                type="url"
-                placeholder="Enter URL to preview"
-                value={url}
-                onChange={(e) => onUrlChange(e.target.value)}
-                className="w-64"
-              />
+              <div className="flex flex-col space-y-1">
+                <Label htmlFor="url-input" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Site URL
+                </Label>
+                <Input
+                  id="url-input"
+                  type="url"
+                  placeholder="Enter site URL to preview"
+                  value={url}
+                  onChange={(e) => onUrlChange(e.target.value)}
+                  className="w-64"
+                />
+              </div>
             )}
             <Button
               variant="ghost"

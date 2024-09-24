@@ -3,16 +3,17 @@ import { useTheme } from 'next-themes';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import DeviceEmulator from '../components/DeviceEmulator';
+import EmptyStateDevice from '../components/EmptyStateDevice';
 import useSyncedDevices from '../hooks/useSyncedDevices';
 
 const Index = () => {
-  const [url, setUrl] = useState('https://tailwindcss.com');
+  const [url, setUrl] = useState('');
   const [selectedDevices, setSelectedDevices] = useState([]);
   const { theme, setTheme } = useTheme();
   const { syncAction } = useSyncedDevices(selectedDevices);
 
   const handleUrlChange = useCallback((newUrl) => {
-    setUrl(newUrl || 'https://tailwindcss.com');
+    setUrl(newUrl);
   }, []);
 
   const handleDeviceChange = useCallback((device) => {
@@ -32,16 +33,20 @@ const Index = () => {
         />
         <main className="flex-1 bg-gray-100 dark:bg-gray-800 overflow-x-auto">
           <div className="p-6 h-full flex items-start space-x-6 snap-x snap-mandatory">
-            {selectedDevices.map(device => (
-              <DeviceEmulator 
-                key={device.name}
-                url={url} 
-                device={device} 
-                onRemove={handleDeviceChange}
-                syncAction={syncAction}
-                theme={theme}
-              />
-            ))}
+            {selectedDevices.length > 0 ? (
+              selectedDevices.map(device => (
+                <DeviceEmulator 
+                  key={device.name}
+                  url={url} 
+                  device={device} 
+                  onRemove={handleDeviceChange}
+                  syncAction={syncAction}
+                  theme={theme}
+                />
+              ))
+            ) : (
+              <EmptyStateDevice onSelectDevice={handleDeviceChange} />
+            )}
           </div>
         </main>
       </div>
