@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Smartphone, Tablet, Monitor, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Smartphone, Tablet, Monitor, ChevronRight } from 'lucide-react';
 import { devices, categories } from '../utils/devices';
 import {
   Accordion,
@@ -27,64 +27,65 @@ const Sidebar = ({
     }
   };
 
-  return (
-    <div className={`bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 transition-all duration-300 h-full flex flex-col ${isCollapsed ? 'w-16' : 'w-64'}`}>
+  if (isCollapsed) {
+    return (
       <Button
         variant="ghost"
         size="icon"
-        className={`self-end m-2 ${isCollapsed ? 'rotate-180' : ''}`}
-        onClick={() => setIsCollapsed(!isCollapsed)}
+        className="fixed top-16 left-0 z-50 m-2"
+        onClick={() => setIsCollapsed(false)}
       >
-        <ChevronLeft className="h-4 w-4" />
+        <ChevronRight className="h-4 w-4" />
       </Button>
-      {!isCollapsed && (
-        <div className="p-6 space-y-6 overflow-y-auto flex-grow">
-          <div>
-            <h2 className="text-lg font-semibold mb-2">URL Preview</h2>
-            <Input
-              type="url"
-              placeholder="Enter URL to preview"
-              value={url}
-              onChange={(e) => onUrlChange(e.target.value)}
-              className="w-full"
-            />
-          </div>
-          <div>
-            <h2 className="text-lg font-semibold mb-2">Devices</h2>
-            <Accordion type="single" collapsible className="w-full">
-              {categories.map((category) => (
-                <AccordionItem key={category} value={category}>
-                  <AccordionTrigger className="text-md font-medium">
-                    <div className="flex items-center w-full">
-                      <span className="mr-2">{getCategoryIcon(category)}</span>
-                      <span className="flex-grow text-left">
-                        {category.charAt(0).toUpperCase() + category.slice(1)}
-                      </span>
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <div className="space-y-2">
-                      {devices
-                        .filter(device => device.category === category)
-                        .map((device) => (
-                          <Button
-                            key={device.name}
-                            variant={selectedDevices.some(d => d.name === device.name) ? "default" : "outline"}
-                            className="w-full justify-start text-left text-sm"
-                            onClick={() => onSelectDevice(device)}
-                          >
-                            {device.name}
-                          </Button>
-                        ))
-                      }
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
-          </div>
+    );
+  }
+
+  return (
+    <div className="bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 transition-all duration-300 h-full flex flex-col w-64">
+      <Button
+        variant="ghost"
+        size="icon"
+        className="self-end m-2"
+        onClick={() => setIsCollapsed(true)}
+      >
+        <ChevronRight className="h-4 w-4 rotate-180" />
+      </Button>
+      <div className="p-6 space-y-6 overflow-y-auto flex-grow">
+        <div>
+          <h2 className="text-lg font-semibold mb-2">Devices</h2>
+          <Accordion type="single" collapsible className="w-full">
+            {categories.map((category) => (
+              <AccordionItem key={category} value={category}>
+                <AccordionTrigger className="text-md font-medium">
+                  <div className="flex items-center w-full">
+                    <span className="mr-2">{getCategoryIcon(category)}</span>
+                    <span className="flex-grow text-left">
+                      {category.charAt(0).toUpperCase() + category.slice(1)}
+                    </span>
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent>
+                  <div className="space-y-2">
+                    {devices
+                      .filter(device => device.category === category)
+                      .map((device) => (
+                        <Button
+                          key={device.name}
+                          variant={selectedDevices.some(d => d.name === device.name) ? "default" : "outline"}
+                          className="w-full justify-start text-left text-sm"
+                          onClick={() => onSelectDevice(device)}
+                        >
+                          {device.name}
+                        </Button>
+                      ))
+                    }
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
         </div>
-      )}
+      </div>
     </div>
   );
 };

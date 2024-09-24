@@ -24,11 +24,9 @@ const Index = () => {
 
   return (
     <div className="flex flex-col h-screen bg-gray-100 dark:bg-gray-900">
-      <Header theme={theme} setTheme={setTheme} />
+      <Header theme={theme} setTheme={setTheme} url={url} onUrlChange={handleUrlChange} />
       <div className="flex flex-1 overflow-hidden">
         <Sidebar
-          url={url}
-          onUrlChange={handleUrlChange}
           selectedDevices={selectedDevices}
           onSelectDevice={handleDeviceChange}
         />
