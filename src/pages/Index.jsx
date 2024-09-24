@@ -53,7 +53,7 @@ const Index = () => {
           isMobile={isMobile}
         />
       </div>
-      <div className="flex flex-1 overflow-hidden relative">
+      <div className="flex flex-1 overflow-hidden relative z-10">
         <Sidebar
           isOpen={isSidebarOpen}
           selectedDevices={selectedDevices}
