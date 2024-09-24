@@ -65,7 +65,7 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction, theme }) => {
   };
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 flex-shrink-0">
       <div className="rounded-t-lg">
         <div className="flex justify-between items-center text-sm font-medium">
           <span className="font-outfit">{device.name}</span>

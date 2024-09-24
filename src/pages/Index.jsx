@@ -38,8 +38,14 @@ const Index = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
+  const handleOutsideClick = (e) => {
+    if (isMobile && isSidebarOpen && !e.target.closest('.sidebar')) {
+      setIsSidebarOpen(false);
+    }
+  };
+
   return (
-    <div className="flex flex-col h-screen bg-gray-100 dark:bg-gray-900 font-outfit">
+    <div className="flex flex-col h-screen bg-gray-100 dark:bg-gray-900 font-outfit" onClick={handleOutsideClick}>
       <Header 
         theme={theme} 
         setTheme={setTheme} 
@@ -57,7 +63,7 @@ const Index = () => {
           url={url}
           onUrlChange={handleUrlChange}
         />
-        <main className="flex-1 bg-gray-100 dark:bg-gray-800 overflow-x-auto transition-all duration-300">
+        <main className={`flex-1 bg-gray-100 dark:bg-gray-800 overflow-x-auto transition-all duration-300 ${isSidebarOpen && !isMobile ? 'ml-64' : ''}`}>
           <div className="p-6 h-full flex items-start space-x-6 snap-x snap-mandatory">
             {selectedDevices.length > 0 ? (
               selectedDevices.map(device => (
