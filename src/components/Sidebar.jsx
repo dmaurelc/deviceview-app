@@ -42,7 +42,7 @@ const Sidebar = ({
       <Button
         variant="secondary"
         size="icon"
-        className="fixed top-16 left-0 z-50 m-2 bg-primary text-primary-foreground"
+        className="fixed top-20 left-0 z-50 m-2 bg-primary text-primary-foreground"
         onClick={() => setIsCollapsed(false)}
       >
         <ChevronRight className="h-4 w-4" />
