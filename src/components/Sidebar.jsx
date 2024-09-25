@@ -86,7 +86,11 @@ const Sidebar = ({
                               ? "default"
                               : "outline"
                           }
-                          className="w-full justify-start text-left text-sm font-outfit"
+                          className={`w-full justify-start text-left text-sm font-outfit ${
+                            selectedDevices.some((d) => d.name === device.name)
+                              ? "bg-primary text-primary-foreground dark:bg-primary dark:text-primary-foreground"
+                              : "bg-background text-foreground dark:bg-gray-800 dark:text-gray-200"
+                          }`}
                           onClick={() => onSelectDevice(device)}
                         >
                           {device.name}
