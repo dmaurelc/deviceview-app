@@ -39,21 +39,18 @@ const Index = () => {
       const isSelected = prev.some(d => d.name === device.name);
       return isSelected ? prev.filter(d => d.name !== device.name) : [...prev, device];
     });
-    toggleCategory(device.category);
-  }, []);
+    if (!openCategories.includes(device.category)) {
+      setOpenCategories(prev => [...prev, device.category]);
+    }
+  }, [openCategories]);
 
-  const toggleCategory = useCallback((category) => {
-    setOpenCategories(prev => 
-      prev.includes(category) 
-        ? prev.filter(c => c !== category) 
-        : [...prev, category]
-    );
+  const toggleCategory = useCallback((newOpenCategories) => {
+    setOpenCategories(newOpenCategories);
   }, []);
 
   const addRandomDevice = useCallback(() => {
     const randomDevice = devices[Math.floor(Math.random() * devices.length)];
     handleDeviceChange(randomDevice);
-    setOpenCategories(prev => [...new Set([...prev, randomDevice.category])]);
   }, [handleDeviceChange]);
 
   const toggleSidebar = () => {
