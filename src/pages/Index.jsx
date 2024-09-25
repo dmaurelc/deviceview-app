@@ -1,19 +1,16 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useTheme } from 'next-themes';
-import { toast } from 'sonner';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import DeviceEmulator from '../components/DeviceEmulator';
 import EmptyStateDevice from '../components/EmptyStateDevice';
 import useSyncedDevices from '../hooks/useSyncedDevices';
-import { validateUrl } from '../utils/urlValidator';
 
 const Index = () => {
   const [url, setUrl] = useState('');
   const [selectedDevices, setSelectedDevices] = useState([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
-  const [isUrlValid, setIsUrlValid] = useState(true);
   const { theme, setTheme } = useTheme();
   const { syncAction } = useSyncedDevices(selectedDevices);
 
@@ -31,27 +28,14 @@ const Index = () => {
 
   const handleUrlChange = useCallback((newUrl) => {
     setUrl(newUrl);
-    setIsUrlValid(true); // Reset validation state when URL changes
   }, []);
 
-  const handleUrlSubmit = useCallback(async () => {
-    const isValid = await validateUrl(url);
-    setIsUrlValid(isValid);
-    if (!isValid) {
-      toast.error('La URL ingresada no es válida o no está accesible. Por favor, verifica e intenta nuevamente.');
-    }
-  }, [url]);
-
   const handleDeviceChange = useCallback((device) => {
-    if (isUrlValid) {
-      setSelectedDevices(prev => {
-        const isSelected = prev.some(d => d.name === device.name);
-        return isSelected ? prev.filter(d => d.name !== device.name) : [...prev, device];
-      });
-    } else {
-      toast.error('Por favor, ingresa una URL válida antes de seleccionar un dispositivo.');
-    }
-  }, [isUrlValid]);
+    setSelectedDevices(prev => {
+      const isSelected = prev.some(d => d.name === device.name);
+      return isSelected ? prev.filter(d => d.name !== device.name) : [...prev, device];
+    });
+  }, []);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(prev => !prev);
@@ -90,15 +74,10 @@ const Index = () => {
                   onRemove={handleDeviceChange}
                   syncAction={syncAction}
                   theme={theme}
-                  isUrlValid={isUrlValid}
                 />
               ))
             ) : (
-              <EmptyStateDevice 
-                url={url} 
-                onUrlChange={handleUrlChange} 
-                onUrlSubmit={handleUrlSubmit}
-              />
+              <EmptyStateDevice url={url} onUrlChange={handleUrlChange} />
             )}
           </div>
         </main>

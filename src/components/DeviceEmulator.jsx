@@ -1,25 +1,22 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { X, RotateCcw, AlertCircle } from 'lucide-react';
+import { X, RotateCcw } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import TemporaryUrlPlaceholder from './TemporaryUrlPlaceholder';
 
-const DeviceEmulator = ({ url, device, onRemove, syncAction, theme, isUrlValid }) => {
+const DeviceEmulator = ({ url, device, onRemove, syncAction, theme }) => {
   const iframeRef = useRef(null);
   const [isRotated, setIsRotated] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [hasError, setHasError] = useState(false);
+  const [isValidUrl, setIsValidUrl] = useState(true);
 
   useEffect(() => {
     const iframe = iframeRef.current;
     if (iframe) {
       const handleLoad = () => {
         iframe.contentWindow.postMessage({ type: 'INIT_LISTENERS', theme }, '*');
-        setIsLoading(false);
-        setHasError(false);
+        setIsValidUrl(true);
       };
       const handleError = () => {
-        setIsLoading(false);
-        setHasError(true);
+        setIsValidUrl(false);
       };
       iframe.addEventListener('load', handleLoad);
       iframe.addEventListener('error', handleError);
@@ -58,6 +55,15 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction, theme, isUrlValid }
 
   const canRotate = device.category === 'mobile' || device.category === 'tablet';
 
+  const isValidURL = (string) => {
+    try {
+      new URL(string);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  };
+
   return (
     <div className="flex flex-col gap-2 flex-shrink-0">
       <div className="rounded-t-lg">
@@ -67,7 +73,7 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction, theme, isUrlValid }
         </div>
       </div>
       <div className="flex flex-col bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden flex-shrink-0 snap-center" style={{ width: `${deviceWidth}px` }}>
-        <div className="bg-gray-200 dark:bg-gray-700 h-7 flex items-center justify-between px-2 text-xs font-medium">
+        <div className="bg-gray-100 dark:bg-gray-700 h-7 flex items-center justify-between px-2 text-xs font-medium">
           <div className="flex items-center space-x-1.5">
             <div className="w-2.5 h-2.5 rounded-full bg-red-500"></div>
             <div className="w-2.5 h-2.5 rounded-full bg-yellow-500"></div>
@@ -86,27 +92,14 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction, theme, isUrlValid }
           </div>
         </div>
         <div style={{ height: `${deviceHeight}px`, width: `${deviceWidth}px`, overflow: 'hidden' }}>
-          {isUrlValid ? (
-            isLoading ? (
-              <div className="w-full h-full flex items-center justify-center bg-gray-100 dark:bg-gray-800">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 dark:border-white"></div>
-              </div>
-            ) : hasError ? (
-              <div className="w-full h-full flex flex-col items-center justify-center bg-gray-100 dark:bg-gray-800 p-4">
-                <AlertCircle className="w-12 h-12 text-red-500 mb-2" />
-                <p className="text-center text-sm text-gray-600 dark:text-gray-400">
-                  No se pudo cargar la página. Por favor, verifica la URL e intenta nuevamente.
-                </p>
-              </div>
-            ) : (
-              <iframe
-                ref={iframeRef}
-                src={url}
-                title={`Preview on ${device.name}`}
-                className="w-full h-full border-0"
-                style={{ width: '100%', height: '100%' }}
-              />
-            )
+          {isValidURL(url) && isValidUrl ? (
+            <iframe
+              ref={iframeRef}
+              src={url}
+              title={`Preview on ${device.name}`}
+              className="w-full h-full border-0"
+              style={{ width: '100%', height: '100%' }}
+            />
           ) : (
             <TemporaryUrlPlaceholder />
           )}
