@@ -12,7 +12,11 @@ const DeviceSelector = ({ devices, selectedDevices, onSelectDevice, category }) 
           <Button
             key={device.name}
             variant={isSelected ? "default" : "outline"}
-            className={`w-full justify-start text-left text-sm ${isSelected ? 'bg-primary text-primary-foreground' : ''}`}
+            className={`w-full justify-start text-left text-sm ${
+              isSelected 
+                ? 'bg-primary text-primary-foreground dark:bg-primary dark:text-primary-foreground' 
+                : 'dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
+            }`}
             onClick={() => onSelectDevice(device)}
           >
             <DeviceIcon className="mr-2 h-4 w-4" />
