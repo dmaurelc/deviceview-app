@@ -12,6 +12,7 @@ const Index = () => {
   const [selectedDevices, setSelectedDevices] = useState([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
+  const [openCategory, setOpenCategory] = useState(null);
   const { theme, setTheme } = useTheme();
   const { syncAction } = useSyncedDevices(selectedDevices);
 
@@ -36,6 +37,7 @@ const Index = () => {
       const isSelected = prev.some(d => d.name === device.name);
       return isSelected ? prev.filter(d => d.name !== device.name) : [...prev, device];
     });
+    setOpenCategory(device.category);
   }, []);
 
   const addRandomDevice = useCallback(() => {
@@ -68,6 +70,7 @@ const Index = () => {
           isMobile={isMobile}
           url={url}
           onUrlChange={handleUrlChange}
+          openCategory={openCategory}
         />
         <main className={`flex-1 bg-gray-100 dark:bg-gray-800 overflow-x-auto transition-all duration-300 ${isSidebarOpen && !isMobile ? 'ml-64' : ''}`}>
           <div className="p-6 h-full flex items-start space-x-6 snap-x snap-mandatory">
