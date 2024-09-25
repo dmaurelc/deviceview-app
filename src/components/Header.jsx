@@ -1,15 +1,9 @@
 import React from "react";
-import { Moon, Sun, Menu, Laptop } from "lucide-react";
+import { Moon, Sun, Laptop, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Logo from "./Logo";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 const Header = ({
   theme,
@@ -26,6 +20,26 @@ const Header = ({
       value = "https://" + value;
     }
     onUrlChange(value);
+  };
+
+  const cycleTheme = () => {
+    const themes = ['light', 'dark', 'system'];
+    const currentIndex = themes.indexOf(theme);
+    const nextIndex = (currentIndex + 1) % themes.length;
+    setTheme(themes[nextIndex]);
+  };
+
+  const getThemeIcon = () => {
+    switch (theme) {
+      case 'light':
+        return <Sun className="h-5 w-5" />;
+      case 'dark':
+        return <Moon className="h-5 w-5" />;
+      case 'system':
+        return <Laptop className="h-5 w-5" />;
+      default:
+        return <Sun className="h-5 w-5" />;
+    }
   };
 
   return (
@@ -65,33 +79,14 @@ const Header = ({
                 />
               </div>
             )}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" aria-label="Toggle theme">
-                  {theme === "dark" ? (
-                    <Moon className="h-5 w-5" />
-                  ) : theme === "light" ? (
-                    <Sun className="h-5 w-5" />
-                  ) : (
-                    <Laptop className="h-5 w-5" />
-                  )}
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => setTheme("light")}>
-                  <Sun className="mr-2 h-4 w-4" />
-                  <span>Light</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setTheme("dark")}>
-                  <Moon className="mr-2 h-4 w-4" />
-                  <span>Dark</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setTheme("system")}>
-                  <Laptop className="mr-2 h-4 w-4" />
-                  <span>System</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={cycleTheme}
+              aria-label={`Toggle theme (current: ${theme})`}
+            >
+              {getThemeIcon()}
+            </Button>
           </div>
         </div>
       </div>
