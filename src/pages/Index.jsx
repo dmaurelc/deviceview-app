@@ -5,6 +5,7 @@ import Sidebar from '../components/Sidebar';
 import DeviceEmulator from '../components/DeviceEmulator';
 import EmptyStateDevice from '../components/EmptyStateDevice';
 import useSyncedDevices from '../hooks/useSyncedDevices';
+import { devices } from '../utils/devices';
 
 const Index = () => {
   const [url, setUrl] = useState('');
@@ -36,6 +37,11 @@ const Index = () => {
       return isSelected ? prev.filter(d => d.name !== device.name) : [...prev, device];
     });
   }, []);
+
+  const addRandomDevice = useCallback(() => {
+    const randomDevice = devices[Math.floor(Math.random() * devices.length)];
+    handleDeviceChange(randomDevice);
+  }, [handleDeviceChange]);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(prev => !prev);
@@ -77,7 +83,11 @@ const Index = () => {
                 />
               ))
             ) : (
-              <EmptyStateDevice url={url} onUrlChange={handleUrlChange} />
+              <EmptyStateDevice 
+                url={url} 
+                onUrlChange={handleUrlChange} 
+                onAddRandomDevice={addRandomDevice}
+              />
             )}
           </div>
         </main>

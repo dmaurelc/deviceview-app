@@ -9,6 +9,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import DeviceSelector from "./DeviceSelector";
 
 const Sidebar = ({
   isOpen,
@@ -49,13 +50,13 @@ const Sidebar = ({
     >
       <div className="flex flex-col h-full">
         <div className="pt-6 p-4 flex justify-between items-center border-b border-gray-200 dark:border-gray-800">
-          <h2 className="text-lg font-semibold font-outfit">Devices</h2>
+          <h2 className="text-lg font-semibold font-outfit">Dispositivos</h2>
         </div>
         {isMobile && (
           <div className="p-4 border-b border-gray-200 dark:border-gray-800">
             <Input
               type="text"
-              placeholder="Enter site URL"
+              placeholder="Ingresa la URL del sitio"
               value={url.startsWith("https://") ? url.slice(8) : url}
               onChange={handleUrlChange}
               className="w-full font-outfit"
@@ -75,29 +76,12 @@ const Sidebar = ({
                   </div>
                 </AccordionTrigger>
                 <AccordionContent>
-                  <div className="space-y-2">
-                    {devices
-                      .filter((device) => device.category === category)
-                      .map((device) => (
-                        <Button
-                          key={device.name}
-                          variant={
-                            selectedDevices.some((d) => d.name === device.name)
-                              ? "default"
-                              : "outline"
-                          }
-                          className={`w-full justify-start text-left text-sm font-outfit 
-                            ${
-                              selectedDevices.some((d) => d.name === device.name)
-                                ? "bg-primary text-primary-foreground dark:bg-primary dark:text-primary-foreground hover:bg-primary/90 dark:hover:bg-primary/90"
-                                : "bg-background text-foreground dark:bg-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
-                            }`}
-                          onClick={() => onSelectDevice(device)}
-                        >
-                          {device.name}
-                        </Button>
-                      ))}
-                  </div>
+                  <DeviceSelector
+                    devices={devices.filter((device) => device.category === category)}
+                    selectedDevices={selectedDevices}
+                    onSelectDevice={onSelectDevice}
+                    category={category}
+                  />
                 </AccordionContent>
               </AccordionItem>
             ))}
@@ -105,7 +89,7 @@ const Sidebar = ({
         </div>
         <div className="p-4 border-t border-gray-200 dark:border-gray-800 mt-auto">
           <p className="text-left text-sm text-gray-500 dark:text-gray-400 font-outfit">
-            DeviceView - Created with AI
+            DeviceView - Creado con IA
           </p>
         </div>
       </div>
