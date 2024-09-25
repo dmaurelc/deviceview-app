@@ -12,6 +12,7 @@ const Header = ({
   onUrlChange,
   toggleSidebar,
   isMobile,
+  hasSelectedDevices
 }) => {
   const handleUrlChange = (e) => {
     let value = e.target.value;
@@ -39,8 +40,8 @@ const Header = ({
               DeviceView
             </h1>
           </div>
-          {!isMobile && (
-            <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-4">
+            {!isMobile && hasSelectedDevices && (
               <div className="flex items-center space-x-2">
                 <Label
                   htmlFor="url-input"
@@ -57,20 +58,20 @@ const Header = ({
                   className="w-64 font-outfit"
                 />
               </div>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                aria-label="Toggle theme"
-              >
-                {theme === "dark" ? (
-                  <Sun className="h-5 w-5" />
-                ) : (
-                  <Moon className="h-5 w-5" />
-                )}
-              </Button>
-            </div>
-          )}
+            )}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              aria-label="Toggle theme"
+            >
+              {theme === "dark" ? (
+                <Sun className="h-5 w-5" />
+              ) : (
+                <Moon className="h-5 w-5" />
+              )}
+            </Button>
+          </div>
         </div>
       </div>
     </header>

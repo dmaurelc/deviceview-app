@@ -51,6 +51,7 @@ const Index = () => {
           onUrlChange={handleUrlChange} 
           toggleSidebar={toggleSidebar}
           isMobile={isMobile}
+          hasSelectedDevices={selectedDevices.length > 0}
         />
       </div>
       <div className="flex flex-1 overflow-hidden relative z-10">
@@ -76,7 +77,7 @@ const Index = () => {
                 />
               ))
             ) : (
-              <EmptyStateDevice onSelectDevice={handleDeviceChange} />
+              <EmptyStateDevice url={url} onUrlChange={handleUrlChange} />
             )}
           </div>
         </main>
