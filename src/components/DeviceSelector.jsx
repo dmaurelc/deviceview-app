@@ -14,8 +14,8 @@ const DeviceSelector = ({ devices, selectedDevices, onSelectDevice, category }) 
             variant={isSelected ? "default" : "outline"}
             className={`w-full justify-start text-left text-sm ${
               isSelected 
-                ? 'bg-primary text-primary-foreground dark:bg-primary dark:text-primary-foreground' 
-                : 'dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
+                ? 'bg-primary text-primary-foreground dark:bg-primary dark:text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground dark:hover:bg-primary/90 dark:hover:text-primary-foreground' 
+                : 'dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white'
             }`}
             onClick={() => onSelectDevice(device)}
           >
