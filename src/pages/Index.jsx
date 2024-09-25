@@ -6,7 +6,6 @@ import DeviceEmulator from '../components/DeviceEmulator';
 import EmptyStateDevice from '../components/EmptyStateDevice';
 import useSyncedDevices from '../hooks/useSyncedDevices';
 import { devices } from '../utils/devices';
-import { checkUrlValidity } from '../utils/urlValidator';
 import { useToast } from "@/components/ui/use-toast";
 
 const Index = () => {
@@ -51,20 +50,11 @@ const Index = () => {
     );
   }, []);
 
-  const addRandomDevice = useCallback(async () => {
-    try {
-      await checkUrlValidity(url);
-      const randomDevice = devices[Math.floor(Math.random() * devices.length)];
-      handleDeviceChange(randomDevice);
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
-      throw error;
-    }
-  }, [url, handleDeviceChange, toast]);
+  const addRandomDevice = useCallback(() => {
+    const randomDevice = devices[Math.floor(Math.random() * devices.length)];
+    handleDeviceChange(randomDevice);
+    setOpenCategories(prev => [...new Set([...prev, randomDevice.category])]);
+  }, [handleDeviceChange]);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(prev => !prev);
