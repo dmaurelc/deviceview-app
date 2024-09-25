@@ -86,11 +86,12 @@ const Sidebar = ({
                               ? "default"
                               : "outline"
                           }
-                          className={`w-full justify-start text-left text-sm font-outfit ${
-                            selectedDevices.some((d) => d.name === device.name)
-                              ? "bg-primary text-primary-foreground dark:bg-primary dark:text-primary-foreground"
-                              : "bg-background text-foreground dark:bg-gray-800 dark:text-gray-200"
-                          }`}
+                          className={`w-full justify-start text-left text-sm font-outfit 
+                            ${
+                              selectedDevices.some((d) => d.name === device.name)
+                                ? "bg-primary text-primary-foreground dark:bg-primary dark:text-primary-foreground hover:bg-primary/90 dark:hover:bg-primary/90"
+                                : "bg-background text-foreground dark:bg-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                            }`}
                           onClick={() => onSelectDevice(device)}
                         >
                           {device.name}
