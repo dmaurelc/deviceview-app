@@ -18,7 +18,8 @@ const Sidebar = ({
   isMobile,
   url,
   onUrlChange,
-  openCategory,
+  openCategories,
+  toggleCategory,
 }) => {
   const handleUrlChange = (e) => {
     let value = e.target.value;
@@ -65,7 +66,7 @@ const Sidebar = ({
           </div>
         )}
         <div className="p-4 space-y-4 overflow-y-auto flex-grow">
-          <Accordion type="single" collapsible className="w-full" value={openCategory}>
+          <Accordion type="multiple" value={openCategories} onValueChange={toggleCategory}>
             {categories.map((category) => (
               <AccordionItem key={category} value={category}>
                 <AccordionTrigger className="text-md font-medium font-outfit">

@@ -6,15 +6,18 @@ import DeviceEmulator from '../components/DeviceEmulator';
 import EmptyStateDevice from '../components/EmptyStateDevice';
 import useSyncedDevices from '../hooks/useSyncedDevices';
 import { devices } from '../utils/devices';
+import { checkUrlValidity } from '../utils/urlValidator';
+import { useToast } from "@/components/ui/use-toast";
 
 const Index = () => {
   const [url, setUrl] = useState('');
   const [selectedDevices, setSelectedDevices] = useState([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
-  const [openCategory, setOpenCategory] = useState(null);
+  const [openCategories, setOpenCategories] = useState([]);
   const { theme, setTheme } = useTheme();
   const { syncAction } = useSyncedDevices(selectedDevices);
+  const { toast } = useToast();
 
   useEffect(() => {
     const handleResize = () => {
@@ -37,13 +40,31 @@ const Index = () => {
       const isSelected = prev.some(d => d.name === device.name);
       return isSelected ? prev.filter(d => d.name !== device.name) : [...prev, device];
     });
-    setOpenCategory(device.category);
+    toggleCategory(device.category);
   }, []);
 
-  const addRandomDevice = useCallback(() => {
-    const randomDevice = devices[Math.floor(Math.random() * devices.length)];
-    handleDeviceChange(randomDevice);
-  }, [handleDeviceChange]);
+  const toggleCategory = useCallback((category) => {
+    setOpenCategories(prev => 
+      prev.includes(category) 
+        ? prev.filter(c => c !== category) 
+        : [...prev, category]
+    );
+  }, []);
+
+  const addRandomDevice = useCallback(async () => {
+    try {
+      await checkUrlValidity(url);
+      const randomDevice = devices[Math.floor(Math.random() * devices.length)];
+      handleDeviceChange(randomDevice);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+      throw error;
+    }
+  }, [url, handleDeviceChange, toast]);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(prev => !prev);
@@ -70,7 +91,8 @@ const Index = () => {
           isMobile={isMobile}
           url={url}
           onUrlChange={handleUrlChange}
-          openCategory={openCategory}
+          openCategories={openCategories}
+          toggleCategory={toggleCategory}
         />
         <main className={`flex-1 bg-gray-100 dark:bg-gray-800 overflow-x-auto transition-all duration-300 ${isSidebarOpen && !isMobile ? 'ml-64' : ''}`}>
           <div className="p-6 h-full flex items-start space-x-6 snap-x snap-mandatory">

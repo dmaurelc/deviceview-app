@@ -1,22 +1,44 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Smartphone } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { isValidUrl } from '../utils/urlValidator';
+import { useToast } from "@/components/ui/use-toast";
 
 const EmptyStateDevice = ({ url, onUrlChange, onAddRandomDevice }) => {
+  const [isUrlValid, setIsUrlValid] = useState(true);
+  const { toast } = useToast();
+
   const handleUrlChange = (e) => {
-    let value = e.target.value;
-    if (!value.startsWith("https://") && value !== "") {
-      value = "https://" + value;
+    const value = e.target.value;
+    const isValid = isValidUrl(value);
+    setIsUrlValid(isValid);
+    if (isValid) {
+      onUrlChange(value.startsWith('http') ? value : `https://${value}`);
+    } else {
+      onUrlChange(value);
     }
-    onUrlChange(value);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (url) {
-      onAddRandomDevice();
+    if (isUrlValid && url) {
+      try {
+        await onAddRandomDevice();
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: error.message,
+          variant: "destructive",
+        });
+      }
+    } else {
+      toast({
+        title: "URL Inválida",
+        description: "Por favor, ingrese una URL válida",
+        variant: "destructive",
+      });
     }
   };
 
@@ -34,12 +56,15 @@ const EmptyStateDevice = ({ url, onUrlChange, onAddRandomDevice }) => {
             id="url-input"
             type="text"
             placeholder="Ingresa la URL del sitio"
-            value={url.startsWith("https://") ? url.slice(8) : url}
+            value={url}
             onChange={handleUrlChange}
-            className="flex-grow font-outfit"
+            className={`flex-grow font-outfit ${!isUrlValid ? 'border-red-500' : ''}`}
           />
-          <Button type="submit" disabled={!url}>Previsualizar</Button>
+          <Button type="submit" disabled={!isUrlValid || !url}>Previsualizar</Button>
         </div>
+        {!isUrlValid && (
+          <p className="text-red-500 text-sm mt-1">Por favor, ingrese una URL válida</p>
+        )}
       </form>
     </div>
   );
