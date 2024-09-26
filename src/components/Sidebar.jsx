@@ -24,6 +24,19 @@ const Sidebar = ({
 }) => {
   const sidebarRef = useRef(null);
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (isMobile && isOpen && sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+        onClose();
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isMobile, isOpen, onClose]);
+
   const handleUrlChange = (e) => {
     let value = e.target.value;
     if (!value.startsWith("https://") && value !== "") {
@@ -44,19 +57,6 @@ const Sidebar = ({
         return null;
     }
   };
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (isMobile && isOpen && sidebarRef.current && !sidebarRef.current.contains(event.target)) {
-        onClose();
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isMobile, isOpen, onClose]);
 
   if (!isOpen) return null;
 
