@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { defaultDevice } from '../utils/devices';
 
-const EmptyStateDevice = ({ url, onUrlChange, onAddDevice }) => {
+const EmptyStateDevice = ({ url, onUrlChange, onSelectDevice }) => {
   const { toast } = useToast();
 
   const handleUrlChange = (e) => {
@@ -17,7 +17,7 @@ const EmptyStateDevice = ({ url, onUrlChange, onAddDevice }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (url) {
-      onAddDevice(defaultDevice);
+      onSelectDevice(defaultDevice);
     } else {
       toast({
         title: "URL Inválida",

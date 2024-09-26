@@ -50,11 +50,6 @@ const Index = () => {
     setOpenCategories(newOpenCategories);
   }, []);
 
-  const addRandomDevice = useCallback(() => {
-    const randomDevice = devices[Math.floor(Math.random() * devices.length)];
-    handleDeviceChange(randomDevice);
-  }, [handleDeviceChange]);
-
   const toggleSidebar = () => {
     setIsSidebarOpen(prev => !prev);
   };
@@ -106,7 +101,7 @@ const Index = () => {
               <EmptyStateDevice 
                 url={url} 
                 onUrlChange={handleUrlChange} 
-                onAddRandomDevice={addRandomDevice}
+                onSelectDevice={handleDeviceChange}
               />
             )}
           </div>
