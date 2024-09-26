@@ -265,7 +265,6 @@ export const devices = [
     brand: "LG",
   },
 ];
-];
 
 export const categories = ["mobile", "tablet", "desktop"];
 export const brands = [...new Set(devices.map((device) => device.brand))];
