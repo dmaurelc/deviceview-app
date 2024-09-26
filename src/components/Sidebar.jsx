@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Smartphone, Tablet, Monitor } from "lucide-react";
@@ -20,7 +20,10 @@ const Sidebar = ({
   onUrlChange,
   openCategories,
   toggleCategory,
+  onClose,
 }) => {
+  const sidebarRef = useRef(null);
+
   const handleUrlChange = (e) => {
     let value = e.target.value;
     if (!value.startsWith("https://") && value !== "") {
@@ -42,10 +45,24 @@ const Sidebar = ({
     }
   };
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (isMobile && isOpen && sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+        onClose();
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isMobile, isOpen, onClose]);
+
   if (!isOpen) return null;
 
   return (
     <div
+      ref={sidebarRef}
       className={`sidebar fixed top-16 left-0 z-50 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 transition-all duration-300 h-[calc(100vh-4rem)] flex flex-col w-64 ${
         isOpen ? "translate-x-0" : "-translate-x-full"
       }`}
