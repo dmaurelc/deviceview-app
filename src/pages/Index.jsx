@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { useTheme } from 'next-themes';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
@@ -17,11 +17,13 @@ const Index = () => {
   const { theme, setTheme } = useTheme();
   const { syncAction } = useSyncedDevices(selectedDevices);
   const { toast } = useToast();
+  const mainRef = useRef(null);
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-      if (window.innerWidth >= 768) {
+      const isMobileView = window.innerWidth < 768;
+      setIsMobile(isMobileView);
+      if (!isMobileView) {
         setIsSidebarOpen(true);
       }
     };
@@ -53,9 +55,15 @@ const Index = () => {
     handleDeviceChange(randomDevice);
   }, [handleDeviceChange]);
 
-  const toggleSidebar = () => {
+  const toggleSidebar = useCallback(() => {
     setIsSidebarOpen(prev => !prev);
-  };
+  }, []);
+
+  const handleMainClick = useCallback((e) => {
+    if (isMobile && isSidebarOpen && !e.target.closest('.sidebar')) {
+      setIsSidebarOpen(false);
+    }
+  }, [isMobile, isSidebarOpen]);
 
   return (
     <div className="flex flex-col h-screen bg-gray-100 dark:bg-gray-900 font-outfit">
@@ -81,7 +89,11 @@ const Index = () => {
           openCategories={openCategories}
           toggleCategory={toggleCategory}
         />
-        <main className={`flex-1 bg-gray-100 dark:bg-gray-800 overflow-x-auto transition-all duration-300 ${isSidebarOpen && !isMobile ? 'ml-64' : ''}`}>
+        <main 
+          ref={mainRef}
+          className={`flex-1 bg-gray-100 dark:bg-gray-800 overflow-x-auto transition-all duration-300 ${isSidebarOpen && !isMobile ? 'ml-64' : ''}`}
+          onClick={handleMainClick}
+        >
           <div className="p-6 h-full flex items-start space-x-6 snap-x snap-mandatory">
             {selectedDevices.length > 0 ? (
               selectedDevices.map(device => (
