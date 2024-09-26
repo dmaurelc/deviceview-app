@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useTheme } from 'next-themes';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
@@ -17,14 +17,11 @@ const Index = () => {
   const { theme, setTheme } = useTheme();
   const { syncAction } = useSyncedDevices(selectedDevices);
   const { toast } = useToast();
-  const mainRef = useRef(null);
-  const sidebarRef = useRef(null);
 
   useEffect(() => {
     const handleResize = () => {
-      const isMobileView = window.innerWidth < 768;
-      setIsMobile(isMobileView);
-      if (!isMobileView) {
+      setIsMobile(window.innerWidth < 768);
+      if (window.innerWidth >= 768) {
         setIsSidebarOpen(true);
       }
     };
@@ -56,15 +53,9 @@ const Index = () => {
     handleDeviceChange(randomDevice);
   }, [handleDeviceChange]);
 
-  const toggleSidebar = useCallback(() => {
+  const toggleSidebar = () => {
     setIsSidebarOpen(prev => !prev);
-  }, []);
-
-  const handleMainClick = useCallback((e) => {
-    if (isMobile && isSidebarOpen && !sidebarRef.current?.contains(e.target)) {
-      setIsSidebarOpen(false);
-    }
-  }, [isMobile, isSidebarOpen]);
+  };
 
   return (
     <div className="flex flex-col h-screen bg-gray-100 dark:bg-gray-900 font-outfit">
@@ -81,7 +72,6 @@ const Index = () => {
       </div>
       <div className="flex flex-1 overflow-hidden relative z-10">
         <Sidebar
-          ref={sidebarRef}
           isOpen={isSidebarOpen}
           selectedDevices={selectedDevices}
           onSelectDevice={handleDeviceChange}
@@ -91,11 +81,7 @@ const Index = () => {
           openCategories={openCategories}
           toggleCategory={toggleCategory}
         />
-        <main 
-          ref={mainRef}
-          className={`flex-1 bg-gray-100 dark:bg-gray-800 overflow-x-auto transition-all duration-300 ${isSidebarOpen && !isMobile ? 'ml-64' : ''}`}
-          onClick={handleMainClick}
-        >
+        <main className={`flex-1 bg-gray-100 dark:bg-gray-800 overflow-x-auto transition-all duration-300 ${isSidebarOpen && !isMobile ? 'ml-64' : ''}`}>
           <div className="p-6 h-full flex items-start space-x-6 snap-x snap-mandatory">
             {selectedDevices.length > 0 ? (
               selectedDevices.map(device => (
