@@ -1,12 +1,14 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, lazy, Suspense } from 'react';
 import { useTheme } from 'next-themes';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
-import DeviceEmulator from '../components/DeviceEmulator';
 import EmptyStateDevice from '../components/EmptyStateDevice';
 import useSyncedDevices from '../hooks/useSyncedDevices';
 import { devices } from '../utils/devices';
 import { useToast } from "@/components/ui/use-toast";
+
+// Lazy load the DeviceEmulator component
+const DeviceEmulator = lazy(() => import('../components/DeviceEmulator'));
 
 const Index = () => {
   const [url, setUrl] = useState('');
@@ -58,7 +60,7 @@ const Index = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-100 dark:bg-gray-900 font-outfit">
+    <div className="flex flex-col min-h-screen bg-gray-100 dark:bg-gray-900 font-outfit">
       <div className="z-50 relative">
         <Header 
           theme={theme} 
@@ -85,14 +87,15 @@ const Index = () => {
           <div className="p-6 h-full flex items-start space-x-6 snap-x snap-mandatory">
             {selectedDevices.length > 0 ? (
               selectedDevices.map(device => (
-                <DeviceEmulator 
-                  key={device.name}
-                  url={url} 
-                  device={device} 
-                  onRemove={handleDeviceChange}
-                  syncAction={syncAction}
-                  theme={theme}
-                />
+                <Suspense key={device.name} fallback={<div>Loading device...</div>}>
+                  <DeviceEmulator 
+                    url={url} 
+                    device={device} 
+                    onRemove={handleDeviceChange}
+                    syncAction={syncAction}
+                    theme={theme}
+                  />
+                </Suspense>
               ))
             ) : (
               <EmptyStateDevice 
