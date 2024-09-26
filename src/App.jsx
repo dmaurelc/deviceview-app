@@ -1,14 +1,11 @@
-import React, { lazy, Suspense } from 'react';
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
+import { navItems } from "./nav-items";
 
 const queryClient = new QueryClient();
-
-// Lazy load the Index component
-const Index = lazy(() => import('./pages/Index.jsx'));
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -16,11 +13,11 @@ const App = () => (
       <TooltipProvider>
         <Toaster />
         <BrowserRouter>
-          <Suspense fallback={<div>Loading...</div>}>
-            <Routes>
-              <Route path="/" element={<Index />} />
-            </Routes>
-          </Suspense>
+          <Routes>
+            {navItems.map(({ to, page }) => (
+              <Route key={to} path={to} element={page} />
+            ))}
+          </Routes>
         </BrowserRouter>
       </TooltipProvider>
     </ThemeProvider>

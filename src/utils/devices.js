@@ -268,6 +268,3 @@ export const devices = [
 
 export const categories = ["mobile", "tablet", "desktop"];
 export const brands = [...new Set(devices.map((device) => device.brand))];
-
-// Exportar el iPhone 12 Pro como dispositivo predeterminado
-export const defaultDevice = devices[0];

@@ -4,9 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { defaultDevice } from '../utils/devices';
 
-const EmptyStateDevice = ({ url, onUrlChange, onSelectDevice }) => {
+const EmptyStateDevice = ({ url, onUrlChange, onAddRandomDevice }) => {
   const { toast } = useToast();
 
   const handleUrlChange = (e) => {
@@ -17,7 +16,7 @@ const EmptyStateDevice = ({ url, onUrlChange, onSelectDevice }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (url) {
-      onSelectDevice(defaultDevice);
+      onAddRandomDevice();
     } else {
       toast({
         title: "URL Inválida",
@@ -30,9 +29,9 @@ const EmptyStateDevice = ({ url, onUrlChange, onSelectDevice }) => {
   return (
     <div className="flex flex-col items-center justify-center w-full h-full bg-gray-100 dark:bg-gray-800 p-8">
       <Smartphone className="w-16 h-16 text-gray-400 mb-4" />
-      <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 text-center">Inicia tu previsualización</h2>
-      <p className="text-gray-600 dark:text-gray-400 text-center mb-6 text-sm sm:text-base">
-        Ingresa la URL del sitio que deseas previsualizar y agregaremos el iPhone 12 Pro automáticamente.
+      <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Comienza tu previsualización</h2>
+      <p className="text-gray-600 dark:text-gray-400 text-center mb-6">
+        Ingresa la URL del sitio que deseas previsualizar y agregaremos automáticamente un dispositivo para ti.
       </p>
       <form onSubmit={handleSubmit} className="w-full max-w-md">
         <Label htmlFor="url-input" className="sr-only">URL del sitio</Label>

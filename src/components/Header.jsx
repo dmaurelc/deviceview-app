@@ -42,11 +42,6 @@ const Header = ({
     }
   };
 
-  const handleMenuClick = (e) => {
-    e.preventDefault();
-    toggleSidebar();
-  };
-
   return (
     <header className="w-full bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
       <div className="max-w-full mx-auto px-4">
@@ -55,7 +50,7 @@ const Header = ({
             <Button
               variant="ghost"
               size="icon"
-              onClick={handleMenuClick}
+              onClick={toggleSidebar}
               aria-label="Toggle sidebar"
             >
               <Menu className="h-5 w-5" />
