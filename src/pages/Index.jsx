@@ -62,6 +62,15 @@ const Index = () => {
     }
   }, [isMobile]);
 
+  const handleMainContentClick = useCallback((e) => {
+    if (isMobile && isSidebarOpen) {
+      // Verificar si el clic no fue dentro del sidebar
+      if (!e.target.closest('.sidebar')) {
+        closeSidebar();
+      }
+    }
+  }, [isMobile, isSidebarOpen, closeSidebar]);
+
   return (
     <div className="flex flex-col min-h-screen bg-gray-100 dark:bg-gray-900 font-outfit">
       <div className="z-50 relative">
@@ -89,7 +98,7 @@ const Index = () => {
         />
         <main 
           className={`flex-1 bg-gray-100 dark:bg-gray-800 overflow-x-auto transition-all duration-300 ${isSidebarOpen && !isMobile ? 'ml-64' : ''}`}
-          onClick={() => isMobile && closeSidebar()}
+          onClick={handleMainContentClick}
         >
           <div className="p-6 h-full flex items-start space-x-6 snap-x snap-mandatory">
             {selectedDevices.length > 0 ? (
