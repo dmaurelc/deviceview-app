@@ -18,6 +18,7 @@ const Index = () => {
   const { syncAction } = useSyncedDevices(selectedDevices);
   const { toast } = useToast();
   const mainRef = useRef(null);
+  const sidebarRef = useRef(null);
 
   useEffect(() => {
     const handleResize = () => {
@@ -60,7 +61,7 @@ const Index = () => {
   }, []);
 
   const handleMainClick = useCallback((e) => {
-    if (isMobile && isSidebarOpen && !e.target.closest('.sidebar')) {
+    if (isMobile && isSidebarOpen && !sidebarRef.current?.contains(e.target)) {
       setIsSidebarOpen(false);
     }
   }, [isMobile, isSidebarOpen]);
@@ -80,6 +81,7 @@ const Index = () => {
       </div>
       <div className="flex flex-1 overflow-hidden relative z-10">
         <Sidebar
+          ref={sidebarRef}
           isOpen={isSidebarOpen}
           selectedDevices={selectedDevices}
           onSelectDevice={handleDeviceChange}

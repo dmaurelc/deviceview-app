@@ -1,4 +1,4 @@
-import React from "react";
+import React, { forwardRef } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Smartphone, Tablet, Monitor } from "lucide-react";
@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/accordion";
 import DeviceSelector from "./DeviceSelector";
 
-const Sidebar = ({
+const Sidebar = forwardRef(({
   isOpen,
   selectedDevices,
   onSelectDevice,
@@ -20,7 +20,7 @@ const Sidebar = ({
   onUrlChange,
   openCategories,
   toggleCategory,
-}) => {
+}, ref) => {
   const handleUrlChange = (e) => {
     let value = e.target.value;
     if (!value.startsWith("https://") && value !== "") {
@@ -46,6 +46,7 @@ const Sidebar = ({
 
   return (
     <div
+      ref={ref}
       className={`sidebar fixed top-16 left-0 z-50 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 transition-all duration-300 h-[calc(100vh-4rem)] flex flex-col w-64 ${
         isOpen ? "translate-x-0" : "-translate-x-full"
       }`}
@@ -97,6 +98,8 @@ const Sidebar = ({
       </div>
     </div>
   );
-};
+});
+
+Sidebar.displayName = "Sidebar";
 
 export default Sidebar;
