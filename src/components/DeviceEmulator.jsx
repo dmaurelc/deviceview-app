@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { X, RotateCcw } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import TemporaryUrlPlaceholder from './TemporaryUrlPlaceholder';
@@ -8,7 +8,7 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction, theme, onIframeClic
   const [isValidUrl, setIsValidUrl] = useState(true);
 
   useEffect(() => {
-    const iframe = iframeRef.current;
+    const iframe = iframeRef?.current;
     if (iframe) {
       const handleLoad = () => {
         iframe.contentWindow.postMessage({ type: 'INIT_LISTENERS', theme }, '*');
@@ -40,7 +40,7 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction, theme, onIframeClic
   }, [syncAction, device.name]);
 
   useEffect(() => {
-    if (iframeRef.current) {
+    if (iframeRef?.current) {
       iframeRef.current.contentWindow.postMessage({ type: 'THEME_CHANGE', theme }, '*');
     }
   }, [theme, iframeRef]);
