@@ -52,9 +52,9 @@ const Index = () => {
     setOpenCategories(newOpenCategories);
   }, []);
 
-  const toggleSidebar = () => {
+  const toggleSidebar = useCallback(() => {
     setIsSidebarOpen(prev => !prev);
-  };
+  }, []);
 
   const closeSidebar = useCallback(() => {
     if (isMobile) {
