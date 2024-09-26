@@ -3,7 +3,7 @@ import { X, RotateCcw } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import TemporaryUrlPlaceholder from './TemporaryUrlPlaceholder';
 
-const DeviceEmulator = ({ url, device, onRemove, syncAction, theme }) => {
+const DeviceEmulator = ({ url, device, onRemove, syncAction, theme, onIframeClick }) => {
   const iframeRef = useRef(null);
   const [isRotated, setIsRotated] = useState(false);
   const [isValidUrl, setIsValidUrl] = useState(true);
@@ -91,7 +91,7 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction, theme }) => {
             </Button>
           </div>
         </div>
-        <div style={{ height: `${deviceHeight}px`, width: `${deviceWidth}px`, overflow: 'hidden' }}>
+        <div style={{ height: `${deviceHeight}px`, width: `${deviceWidth}px`, overflow: 'hidden' }} onClick={onIframeClick}>
           {isValidURL(url) && isValidUrl ? (
             <iframe
               ref={iframeRef}

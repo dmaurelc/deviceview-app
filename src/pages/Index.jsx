@@ -74,6 +74,12 @@ const Index = () => {
     setIsSidebarOpen(prev => !prev);
   };
 
+  const handleMainClick = useCallback(() => {
+    if (isMobile && isSidebarOpen) {
+      setIsSidebarOpen(false);
+    }
+  }, [isMobile, isSidebarOpen]);
+
   return (
     <div className="flex flex-col h-screen bg-gray-100 dark:bg-gray-900 font-outfit">
       <div className="z-50 relative">
@@ -103,6 +109,7 @@ const Index = () => {
         <main 
           ref={mainRef}
           className={`flex-1 bg-gray-100 dark:bg-gray-800 overflow-x-auto transition-all duration-300 ${isSidebarOpen && !isMobile ? 'ml-64' : ''}`}
+          onClick={handleMainClick}
         >
           <div className="p-6 h-full flex items-start space-x-6 snap-x snap-mandatory">
             {selectedDevices.length > 0 ? (
@@ -114,6 +121,7 @@ const Index = () => {
                   onRemove={handleDeviceChange}
                   syncAction={syncAction}
                   theme={theme}
+                  onIframeClick={handleMainClick}
                 />
               ))
             ) : (
