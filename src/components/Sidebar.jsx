@@ -58,8 +58,6 @@ const Sidebar = ({
     }
   };
 
-  if (!isOpen) return null;
-
   return (
     <div
       ref={sidebarRef}

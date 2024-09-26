@@ -56,11 +56,11 @@ const Index = () => {
     setIsSidebarOpen(prev => !prev);
   };
 
-  const closeSidebar = () => {
+  const closeSidebar = useCallback(() => {
     if (isMobile) {
       setIsSidebarOpen(false);
     }
-  };
+  }, [isMobile]);
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-100 dark:bg-gray-900 font-outfit">
@@ -87,7 +87,10 @@ const Index = () => {
           toggleCategory={toggleCategory}
           onClose={closeSidebar}
         />
-        <main className={`flex-1 bg-gray-100 dark:bg-gray-800 overflow-x-auto transition-all duration-300 ${isSidebarOpen && !isMobile ? 'ml-64' : ''}`}>
+        <main 
+          className={`flex-1 bg-gray-100 dark:bg-gray-800 overflow-x-auto transition-all duration-300 ${isSidebarOpen && !isMobile ? 'ml-64' : ''}`}
+          onClick={() => isMobile && closeSidebar()}
+        >
           <div className="p-6 h-full flex items-start space-x-6 snap-x snap-mandatory">
             {selectedDevices.length > 0 ? (
               selectedDevices.map(device => (
