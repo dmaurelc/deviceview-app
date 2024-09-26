@@ -3,8 +3,7 @@ import { X, RotateCcw } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import TemporaryUrlPlaceholder from './TemporaryUrlPlaceholder';
 
-const DeviceEmulator = ({ url, device, onRemove, syncAction, theme, onIframeClick }) => {
-  const iframeRef = useRef(null);
+const DeviceEmulator = ({ url, device, onRemove, syncAction, theme, onIframeClick, iframeRef }) => {
   const [isRotated, setIsRotated] = useState(false);
   const [isValidUrl, setIsValidUrl] = useState(true);
 
@@ -25,7 +24,7 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction, theme, onIframeClic
         iframe.removeEventListener('error', handleError);
       };
     }
-  }, [theme, url]);
+  }, [theme, url, iframeRef]);
 
   useEffect(() => {
     const handleMessage = (event) => {
@@ -44,7 +43,7 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction, theme, onIframeClic
     if (iframeRef.current) {
       iframeRef.current.contentWindow.postMessage({ type: 'THEME_CHANGE', theme }, '*');
     }
-  }, [theme]);
+  }, [theme, iframeRef]);
 
   const handleRotate = () => {
     setIsRotated(!isRotated);
