@@ -48,13 +48,21 @@ const Index = () => {
     setOpenCategories(newOpenCategories);
   }, []);
 
-  const addRandomDevice = useCallback(() => {
-    const randomDevice = devices[Math.floor(Math.random() * devices.length)];
-    handleDeviceChange(randomDevice);
-  }, [handleDeviceChange]);
+  const addIPhone12Pro = useCallback(() => {
+    const iPhone12Pro = devices.find(device => device.name === "iPhone 12 Pro");
+    if (iPhone12Pro && !selectedDevices.some(d => d.name === "iPhone 12 Pro")) {
+      handleDeviceChange(iPhone12Pro);
+    }
+  }, [handleDeviceChange, selectedDevices]);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(prev => !prev);
+  };
+
+  const handleMainClick = () => {
+    if (isMobile) {
+      setIsSidebarOpen(false);
+    }
   };
 
   return (
@@ -81,7 +89,10 @@ const Index = () => {
           openCategories={openCategories}
           toggleCategory={toggleCategory}
         />
-        <main className={`flex-1 bg-gray-100 dark:bg-gray-800 overflow-x-auto transition-all duration-300 ${isSidebarOpen && !isMobile ? 'ml-64' : ''}`}>
+        <main 
+          className={`flex-1 bg-gray-100 dark:bg-gray-800 overflow-x-auto transition-all duration-300 ${isSidebarOpen && !isMobile ? 'ml-64' : ''}`}
+          onClick={handleMainClick}
+        >
           <div className="p-6 h-full flex items-start space-x-6 snap-x snap-mandatory">
             {selectedDevices.length > 0 ? (
               selectedDevices.map(device => (
@@ -98,7 +109,7 @@ const Index = () => {
               <EmptyStateDevice 
                 url={url} 
                 onUrlChange={handleUrlChange} 
-                onAddRandomDevice={addRandomDevice}
+                onAddRandomDevice={addIPhone12Pro}
               />
             )}
           </div>
