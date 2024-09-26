@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { useTheme } from 'next-themes';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
@@ -17,6 +17,8 @@ const Index = () => {
   const { theme, setTheme } = useTheme();
   const { syncAction } = useSyncedDevices(selectedDevices);
   const { toast } = useToast();
+  const sidebarRef = useRef(null);
+  const mainRef = useRef(null);
 
   useEffect(() => {
     const handleResize = () => {
@@ -29,6 +31,19 @@ const Index = () => {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (isMobile && isSidebarOpen && sidebarRef.current && !sidebarRef.current.contains(event.target) && mainRef.current && mainRef.current.contains(event.target)) {
+        setIsSidebarOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isMobile, isSidebarOpen]);
 
   const handleUrlChange = useCallback((newUrl) => {
     setUrl(newUrl);
@@ -59,12 +74,6 @@ const Index = () => {
     setIsSidebarOpen(prev => !prev);
   };
 
-  const handleMainClick = () => {
-    if (isMobile) {
-      setIsSidebarOpen(false);
-    }
-  };
-
   return (
     <div className="flex flex-col h-screen bg-gray-100 dark:bg-gray-900 font-outfit">
       <div className="z-50 relative">
@@ -79,19 +88,21 @@ const Index = () => {
         />
       </div>
       <div className="flex flex-1 overflow-hidden relative z-10">
-        <Sidebar
-          isOpen={isSidebarOpen}
-          selectedDevices={selectedDevices}
-          onSelectDevice={handleDeviceChange}
-          isMobile={isMobile}
-          url={url}
-          onUrlChange={handleUrlChange}
-          openCategories={openCategories}
-          toggleCategory={toggleCategory}
-        />
+        <div ref={sidebarRef}>
+          <Sidebar
+            isOpen={isSidebarOpen}
+            selectedDevices={selectedDevices}
+            onSelectDevice={handleDeviceChange}
+            isMobile={isMobile}
+            url={url}
+            onUrlChange={handleUrlChange}
+            openCategories={openCategories}
+            toggleCategory={toggleCategory}
+          />
+        </div>
         <main 
+          ref={mainRef}
           className={`flex-1 bg-gray-100 dark:bg-gray-800 overflow-x-auto transition-all duration-300 ${isSidebarOpen && !isMobile ? 'ml-64' : ''}`}
-          onClick={handleMainClick}
         >
           <div className="p-6 h-full flex items-start space-x-6 snap-x snap-mandatory">
             {selectedDevices.length > 0 ? (
