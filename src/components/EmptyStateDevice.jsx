@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
+import { firstMobileDevice } from '../utils/devices';
 
 const EmptyStateDevice = ({ url, onUrlChange, onAddRandomDevice }) => {
   const { toast } = useToast();
@@ -16,7 +17,7 @@ const EmptyStateDevice = ({ url, onUrlChange, onAddRandomDevice }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (url) {
-      onAddRandomDevice();
+      onAddRandomDevice(firstMobileDevice);
     } else {
       toast({
         title: "URL Inválida",
@@ -31,7 +32,7 @@ const EmptyStateDevice = ({ url, onUrlChange, onAddRandomDevice }) => {
       <Smartphone className="w-16 h-16 text-gray-400 mb-4" />
       <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 text-center">Inicia tu previsualización</h2>
       <p className="text-gray-600 dark:text-gray-400 text-center mb-6 text-sm sm:text-base">
-        Ingresa la URL del sitio que deseas previsualizar y agregaremos un dispositivo automáticamente.
+        Ingresa la URL del sitio que deseas previsualizar y agregaremos el primer dispositivo móvil automáticamente.
       </p>
       <form onSubmit={handleSubmit} className="w-full max-w-md">
         <Label htmlFor="url-input" className="sr-only">URL del sitio</Label>
