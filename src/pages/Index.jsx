@@ -15,7 +15,7 @@ const Index = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [openCategories, setOpenCategories] = useState([]);
   const { theme, setTheme } = useTheme();
-  const { syncAction, iframeRefs } = useSyncedDevices(selectedDevices);
+  const { syncedState, syncAction, iframeRefs } = useSyncedDevices(selectedDevices);
   const { toast } = useToast();
   const sidebarRef = useRef(null);
   const mainRef = useRef(null);
@@ -122,7 +122,7 @@ const Index = () => {
                   syncAction={syncAction}
                   theme={theme}
                   onIframeClick={handleMainClick}
-                  iframeRef={el => iframeRefs.current[device.name] = el}
+                  iframeRef={iframeRefs}
                 />
               ))
             ) : (

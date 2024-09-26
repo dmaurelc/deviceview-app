@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { X, RotateCcw } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import TemporaryUrlPlaceholder from './TemporaryUrlPlaceholder';
 
 const DeviceEmulator = ({ url, device, onRemove, syncAction, theme, onIframeClick, iframeRef }) => {
-  const [isRotated, setIsRotated] = useState(false);
-  const [isValidUrl, setIsValidUrl] = useState(true);
+  const [isRotated, setIsRotated] = React.useState(false);
+  const [isValidUrl, setIsValidUrl] = React.useState(true);
+  const localIframeRef = useRef(null);
 
   useEffect(() => {
-    const iframe = iframeRef?.current;
+    const iframe = localIframeRef.current;
     if (iframe) {
       const handleLoad = () => {
         iframe.contentWindow.postMessage({ type: 'INIT_LISTENERS', theme }, '*');
@@ -24,7 +25,7 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction, theme, onIframeClic
         iframe.removeEventListener('error', handleError);
       };
     }
-  }, [theme, url, iframeRef]);
+  }, [theme, url]);
 
   useEffect(() => {
     const handleMessage = (event) => {
@@ -34,16 +35,14 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction, theme, onIframeClic
     };
 
     window.addEventListener('message', handleMessage);
-    return () => {
-      window.removeEventListener('message', handleMessage);
-    };
+    return () => window.removeEventListener('message', handleMessage);
   }, [syncAction, device.name]);
 
   useEffect(() => {
-    if (iframeRef?.current) {
-      iframeRef.current.contentWindow.postMessage({ type: 'THEME_CHANGE', theme }, '*');
+    if (localIframeRef.current) {
+      localIframeRef.current.contentWindow.postMessage({ type: 'THEME_CHANGE', theme }, '*');
     }
-  }, [theme, iframeRef]);
+  }, [theme]);
 
   const handleRotate = () => {
     setIsRotated(!isRotated);
@@ -93,7 +92,12 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction, theme, onIframeClic
         <div style={{ height: `${deviceHeight}px`, width: `${deviceWidth}px`, overflow: 'hidden' }} onClick={onIframeClick}>
           {isValidURL(url) && isValidUrl ? (
             <iframe
-              ref={iframeRef}
+              ref={(el) => {
+                localIframeRef.current = el;
+                if (iframeRef) {
+                  iframeRef.current[device.name] = el;
+                }
+              }}
               src={url}
               title={`Preview on ${device.name}`}
               className="w-full h-full border-0"
