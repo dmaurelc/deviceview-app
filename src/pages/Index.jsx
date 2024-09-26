@@ -18,7 +18,6 @@ const Index = () => {
   const { syncAction } = useSyncedDevices(selectedDevices);
   const { toast } = useToast();
   const mainRef = useRef(null);
-  const sidebarRef = useRef(null);
 
   useEffect(() => {
     const handleResize = () => {
@@ -61,22 +60,9 @@ const Index = () => {
   }, []);
 
   const handleMainClick = useCallback((e) => {
-    if (isMobile && isSidebarOpen && !sidebarRef.current.contains(e.target)) {
+    if (isMobile && isSidebarOpen && !e.target.closest('.sidebar')) {
       setIsSidebarOpen(false);
     }
-  }, [isMobile, isSidebarOpen]);
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (isMobile && isSidebarOpen && sidebarRef.current && !sidebarRef.current.contains(event.target)) {
-        setIsSidebarOpen(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
   }, [isMobile, isSidebarOpen]);
 
   return (
@@ -93,18 +79,16 @@ const Index = () => {
         />
       </div>
       <div className="flex flex-1 overflow-hidden relative z-10">
-        <div ref={sidebarRef}>
-          <Sidebar
-            isOpen={isSidebarOpen}
-            selectedDevices={selectedDevices}
-            onSelectDevice={handleDeviceChange}
-            isMobile={isMobile}
-            url={url}
-            onUrlChange={handleUrlChange}
-            openCategories={openCategories}
-            toggleCategory={toggleCategory}
-          />
-        </div>
+        <Sidebar
+          isOpen={isSidebarOpen}
+          selectedDevices={selectedDevices}
+          onSelectDevice={handleDeviceChange}
+          isMobile={isMobile}
+          url={url}
+          onUrlChange={handleUrlChange}
+          openCategories={openCategories}
+          toggleCategory={toggleCategory}
+        />
         <main 
           ref={mainRef}
           className={`flex-1 bg-gray-100 dark:bg-gray-800 overflow-x-auto transition-all duration-300 ${isSidebarOpen && !isMobile ? 'ml-64' : ''}`}
