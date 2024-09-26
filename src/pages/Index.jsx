@@ -7,13 +7,12 @@ import useSyncedDevices from '../hooks/useSyncedDevices';
 import { devices } from '../utils/devices';
 import { useToast } from "@/components/ui/use-toast";
 
-// Lazy load the DeviceEmulator component
 const DeviceEmulator = lazy(() => import('../components/DeviceEmulator'));
 
 const Index = () => {
   const [url, setUrl] = useState('');
   const [selectedDevices, setSelectedDevices] = useState([]);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [openCategories, setOpenCategories] = useState([]);
   const { theme, setTheme } = useTheme();
@@ -26,6 +25,8 @@ const Index = () => {
       setIsMobile(newIsMobile);
       if (!newIsMobile) {
         setIsSidebarOpen(true);
+      } else {
+        setIsSidebarOpen(false);
       }
     };
     handleResize();
