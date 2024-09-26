@@ -22,8 +22,9 @@ const Index = () => {
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-      if (window.innerWidth >= 768) {
+      const newIsMobile = window.innerWidth < 768;
+      setIsMobile(newIsMobile);
+      if (!newIsMobile) {
         setIsSidebarOpen(true);
       }
     };
@@ -55,7 +56,9 @@ const Index = () => {
   };
 
   const closeSidebar = () => {
-    setIsSidebarOpen(false);
+    if (isMobile) {
+      setIsSidebarOpen(false);
+    }
   };
 
   return (
