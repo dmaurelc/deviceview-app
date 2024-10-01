@@ -1,6 +1,5 @@
 import React from "react";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { Smartphone, Tablet, Monitor } from "lucide-react";
 import { devices, categories } from "../utils/devices";
 import {
@@ -10,6 +9,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import DeviceSelector from "./DeviceSelector";
+import { useLanguage } from "../contexts/LanguageContext";
 
 const Sidebar = ({
   isOpen,
@@ -21,6 +21,8 @@ const Sidebar = ({
   openCategories,
   toggleCategory,
 }) => {
+  const { t } = useLanguage();
+
   const handleUrlChange = (e) => {
     let value = e.target.value;
     if (!value.startsWith("https://") && value !== "") {
@@ -52,13 +54,13 @@ const Sidebar = ({
     >
       <div className="flex flex-col h-full">
         <div className="pt-6 p-4 flex justify-between items-center border-b border-gray-200 dark:border-gray-800">
-          <h2 className="text-lg font-semibold font-outfit">Dispositivos</h2>
+          <h2 className="text-lg font-semibold font-outfit">{t('devices')}</h2>
         </div>
         {isMobile && (
           <div className="p-4 border-b border-gray-200 dark:border-gray-800">
             <Input
               type="text"
-              placeholder="Ingresa la URL del sitio"
+              placeholder={t('enterUrl')}
               value={url.startsWith("https://") ? url.slice(8) : url}
               onChange={handleUrlChange}
               className="w-full font-outfit"
@@ -73,7 +75,7 @@ const Sidebar = ({
                   <div className="flex items-center w-full">
                     <span className="mr-2">{getCategoryIcon(category)}</span>
                     <span className="flex-grow text-left">
-                      {category.charAt(0).toUpperCase() + category.slice(1)}
+                      {t(category)}
                     </span>
                   </div>
                 </AccordionTrigger>
@@ -91,7 +93,7 @@ const Sidebar = ({
         </div>
         <div className="p-4 border-t border-gray-200 dark:border-gray-800 mt-auto">
           <p className="text-left text-sm text-gray-500 dark:text-gray-400 font-outfit">
-            DeviceView - Creado con IA
+            DeviceView - {t('createdWithAI')}
           </p>
         </div>
       </div>

@@ -21,7 +21,7 @@ const Header = ({
   isMobile,
   hasSelectedDevices
 }) => {
-  const { language, changeLanguage } = useLanguage();
+  const { language, changeLanguage, t } = useLanguage();
 
   const handleUrlChange = (e) => {
     let value = e.target.value;
@@ -76,12 +76,12 @@ const Header = ({
                   htmlFor="url-input"
                   className="text-sm font-medium text-gray-700 dark:text-gray-300 font-outfit"
                 >
-                  {language === 'es' ? 'URL del sitio:' : 'Site URL:'}
+                  {t('siteUrl')}
                 </Label>
                 <Input
                   id="url-input"
                   type="text"
-                  placeholder={language === 'es' ? "Ingresa la URL del sitio" : "Enter site URL"}
+                  placeholder={t('enterUrl')}
                   value={url.startsWith("https://") ? url.slice(8) : url}
                   onChange={handleUrlChange}
                   className="w-64 font-outfit"
