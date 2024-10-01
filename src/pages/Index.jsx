@@ -7,7 +7,7 @@ import EmptyStateDevice from '../components/EmptyStateDevice';
 import useSyncedDevices from '../hooks/useSyncedDevices';
 import { devices } from '../utils/devices';
 import { useToast } from "@/components/ui/use-toast";
-import { LanguageProvider, useLanguage } from '../contexts/LanguageContext';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const Index = () => {
   const [url, setUrl] = useState('');
