@@ -5,6 +5,12 @@ import Logo from "./Logo";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useLanguage } from "../contexts/LanguageContext";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Header = ({
   theme,
@@ -15,7 +21,7 @@ const Header = ({
   isMobile,
   hasSelectedDevices
 }) => {
-  const { language, toggleLanguage } = useLanguage();
+  const { language, changeLanguage } = useLanguage();
 
   const handleUrlChange = (e) => {
     let value = e.target.value;
@@ -90,14 +96,21 @@ const Header = ({
             >
               {getThemeIcon()}
             </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={toggleLanguage}
-              aria-label="Toggle language"
-            >
-              <Globe className="h-5 w-5" />
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <Globe className="h-5 w-5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem onClick={() => changeLanguage('es')}>
+                  Español
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => changeLanguage('en')}>
+                  English
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </div>

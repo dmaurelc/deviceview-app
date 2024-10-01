@@ -7,7 +7,7 @@ import EmptyStateDevice from '../components/EmptyStateDevice';
 import useSyncedDevices from '../hooks/useSyncedDevices';
 import { devices } from '../utils/devices';
 import { useToast } from "@/components/ui/use-toast";
-import { LanguageProvider } from '../contexts/LanguageContext';
+import { LanguageProvider, useLanguage } from '../contexts/LanguageContext';
 
 const Index = () => {
   const [url, setUrl] = useState('');
@@ -20,6 +20,7 @@ const Index = () => {
   const { toast } = useToast();
   const sidebarRef = useRef(null);
   const mainRef = useRef(null);
+  const { language } = useLanguage();
 
   useEffect(() => {
     const handleResize = () => {
@@ -81,64 +82,76 @@ const Index = () => {
     }
   }, [isMobile, isSidebarOpen]);
 
+  const translations = {
+    es: {
+      startPreview: "Comienza tu previsualización",
+      enterUrl: "Ingresa la URL del sitio que deseas previsualizar y agregaremos automáticamente un dispositivo para ti.",
+      preview: "Previsualizar"
+    },
+    en: {
+      startPreview: "Start your preview",
+      enterUrl: "Enter the URL of the site you want to preview and we'll automatically add a device for you.",
+      preview: "Preview"
+    }
+  };
+
   return (
-    <LanguageProvider>
-      <div className="flex flex-col h-screen bg-gray-100 dark:bg-gray-900 font-outfit">
-        <div className="z-50 relative">
-          <Header 
-            theme={theme} 
-            setTheme={setTheme} 
-            url={url} 
-            onUrlChange={handleUrlChange} 
-            toggleSidebar={toggleSidebar}
+    <div className="flex flex-col h-screen bg-gray-100 dark:bg-gray-900 font-outfit">
+      <div className="z-50 relative">
+        <Header 
+          theme={theme} 
+          setTheme={setTheme} 
+          url={url} 
+          onUrlChange={handleUrlChange} 
+          toggleSidebar={toggleSidebar}
+          isMobile={isMobile}
+          hasSelectedDevices={selectedDevices.length > 0}
+        />
+      </div>
+      <div className="flex flex-1 overflow-hidden relative z-10">
+        <div ref={sidebarRef}>
+          <Sidebar
+            isOpen={isSidebarOpen}
+            selectedDevices={selectedDevices}
+            onSelectDevice={handleDeviceChange}
             isMobile={isMobile}
-            hasSelectedDevices={selectedDevices.length > 0}
+            url={url}
+            onUrlChange={handleUrlChange}
+            openCategories={openCategories}
+            toggleCategory={toggleCategory}
           />
         </div>
-        <div className="flex flex-1 overflow-hidden relative z-10">
-          <div ref={sidebarRef}>
-            <Sidebar
-              isOpen={isSidebarOpen}
-              selectedDevices={selectedDevices}
-              onSelectDevice={handleDeviceChange}
-              isMobile={isMobile}
-              url={url}
-              onUrlChange={handleUrlChange}
-              openCategories={openCategories}
-              toggleCategory={toggleCategory}
-            />
-          </div>
-          <main 
-            ref={mainRef}
-            className={`flex-1 bg-gray-100 dark:bg-gray-800 overflow-x-auto transition-all duration-300 ${isSidebarOpen && !isMobile ? 'ml-64' : ''}`}
-            onClick={handleMainClick}
-          >
-            <div className="p-6 h-full flex items-start space-x-6 snap-x snap-mandatory">
-              {selectedDevices.length > 0 ? (
-                selectedDevices.map(device => (
-                  <DeviceEmulator 
-                    key={device.name}
-                    url={url} 
-                    device={device} 
-                    onRemove={handleDeviceChange}
-                    syncAction={syncAction}
-                    theme={theme}
-                    onIframeClick={handleMainClick}
-                    iframeRef={iframeRefs}
-                  />
-                ))
-              ) : (
-                <EmptyStateDevice 
+        <main 
+          ref={mainRef}
+          className={`flex-1 bg-gray-100 dark:bg-gray-800 overflow-x-auto transition-all duration-300 ${isSidebarOpen && !isMobile ? 'ml-64' : ''}`}
+          onClick={handleMainClick}
+        >
+          <div className="p-6 h-full flex items-start space-x-6 snap-x snap-mandatory">
+            {selectedDevices.length > 0 ? (
+              selectedDevices.map(device => (
+                <DeviceEmulator 
+                  key={device.name}
                   url={url} 
-                  onUrlChange={handleUrlChange} 
-                  onAddRandomDevice={addIPhone12Pro}
+                  device={device} 
+                  onRemove={handleDeviceChange}
+                  syncAction={syncAction}
+                  theme={theme}
+                  onIframeClick={handleMainClick}
+                  iframeRef={iframeRefs}
                 />
-              )}
-            </div>
-          </main>
-        </div>
+              ))
+            ) : (
+              <EmptyStateDevice 
+                url={url} 
+                onUrlChange={handleUrlChange} 
+                onAddRandomDevice={addIPhone12Pro}
+                translations={translations[language]}
+              />
+            )}
+          </div>
+        </main>
       </div>
-    </LanguageProvider>
+    </div>
   );
 };
 
