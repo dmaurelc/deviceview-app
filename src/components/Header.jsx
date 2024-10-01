@@ -1,9 +1,10 @@
 import React from "react";
-import { Moon, Sun, Laptop, Menu } from "lucide-react";
+import { Moon, Sun, Laptop, Menu, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Logo from "./Logo";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useLanguage } from "../contexts/LanguageContext";
 
 const Header = ({
   theme,
@@ -14,6 +15,8 @@ const Header = ({
   isMobile,
   hasSelectedDevices
 }) => {
+  const { language, toggleLanguage } = useLanguage();
+
   const handleUrlChange = (e) => {
     let value = e.target.value;
     if (!value.startsWith("https://") && value !== "") {
@@ -67,12 +70,12 @@ const Header = ({
                   htmlFor="url-input"
                   className="text-sm font-medium text-gray-700 dark:text-gray-300 font-outfit"
                 >
-                  Site URL:
+                  {language === 'es' ? 'URL del sitio:' : 'Site URL:'}
                 </Label>
                 <Input
                   id="url-input"
                   type="text"
-                  placeholder="Enter site URL"
+                  placeholder={language === 'es' ? "Ingresa la URL del sitio" : "Enter site URL"}
                   value={url.startsWith("https://") ? url.slice(8) : url}
                   onChange={handleUrlChange}
                   className="w-64 font-outfit"
@@ -86,6 +89,14 @@ const Header = ({
               aria-label={`Toggle theme (current: ${theme})`}
             >
               {getThemeIcon()}
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleLanguage}
+              aria-label="Toggle language"
+            >
+              <Globe className="h-5 w-5" />
             </Button>
           </div>
         </div>

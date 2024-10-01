@@ -7,6 +7,7 @@ import EmptyStateDevice from '../components/EmptyStateDevice';
 import useSyncedDevices from '../hooks/useSyncedDevices';
 import { devices } from '../utils/devices';
 import { useToast } from "@/components/ui/use-toast";
+import { LanguageProvider } from '../contexts/LanguageContext';
 
 const Index = () => {
   const [url, setUrl] = useState('');
@@ -81,61 +82,63 @@ const Index = () => {
   }, [isMobile, isSidebarOpen]);
 
   return (
-    <div className="flex flex-col h-screen bg-gray-100 dark:bg-gray-900 font-outfit">
-      <div className="z-50 relative">
-        <Header 
-          theme={theme} 
-          setTheme={setTheme} 
-          url={url} 
-          onUrlChange={handleUrlChange} 
-          toggleSidebar={toggleSidebar}
-          isMobile={isMobile}
-          hasSelectedDevices={selectedDevices.length > 0}
-        />
-      </div>
-      <div className="flex flex-1 overflow-hidden relative z-10">
-        <div ref={sidebarRef}>
-          <Sidebar
-            isOpen={isSidebarOpen}
-            selectedDevices={selectedDevices}
-            onSelectDevice={handleDeviceChange}
+    <LanguageProvider>
+      <div className="flex flex-col h-screen bg-gray-100 dark:bg-gray-900 font-outfit">
+        <div className="z-50 relative">
+          <Header 
+            theme={theme} 
+            setTheme={setTheme} 
+            url={url} 
+            onUrlChange={handleUrlChange} 
+            toggleSidebar={toggleSidebar}
             isMobile={isMobile}
-            url={url}
-            onUrlChange={handleUrlChange}
-            openCategories={openCategories}
-            toggleCategory={toggleCategory}
+            hasSelectedDevices={selectedDevices.length > 0}
           />
         </div>
-        <main 
-          ref={mainRef}
-          className={`flex-1 bg-gray-100 dark:bg-gray-800 overflow-x-auto transition-all duration-300 ${isSidebarOpen && !isMobile ? 'ml-64' : ''}`}
-          onClick={handleMainClick}
-        >
-          <div className="p-6 h-full flex items-start space-x-6 snap-x snap-mandatory">
-            {selectedDevices.length > 0 ? (
-              selectedDevices.map(device => (
-                <DeviceEmulator 
-                  key={device.name}
-                  url={url} 
-                  device={device} 
-                  onRemove={handleDeviceChange}
-                  syncAction={syncAction}
-                  theme={theme}
-                  onIframeClick={handleMainClick}
-                  iframeRef={iframeRefs}
-                />
-              ))
-            ) : (
-              <EmptyStateDevice 
-                url={url} 
-                onUrlChange={handleUrlChange} 
-                onAddRandomDevice={addIPhone12Pro}
-              />
-            )}
+        <div className="flex flex-1 overflow-hidden relative z-10">
+          <div ref={sidebarRef}>
+            <Sidebar
+              isOpen={isSidebarOpen}
+              selectedDevices={selectedDevices}
+              onSelectDevice={handleDeviceChange}
+              isMobile={isMobile}
+              url={url}
+              onUrlChange={handleUrlChange}
+              openCategories={openCategories}
+              toggleCategory={toggleCategory}
+            />
           </div>
-        </main>
+          <main 
+            ref={mainRef}
+            className={`flex-1 bg-gray-100 dark:bg-gray-800 overflow-x-auto transition-all duration-300 ${isSidebarOpen && !isMobile ? 'ml-64' : ''}`}
+            onClick={handleMainClick}
+          >
+            <div className="p-6 h-full flex items-start space-x-6 snap-x snap-mandatory">
+              {selectedDevices.length > 0 ? (
+                selectedDevices.map(device => (
+                  <DeviceEmulator 
+                    key={device.name}
+                    url={url} 
+                    device={device} 
+                    onRemove={handleDeviceChange}
+                    syncAction={syncAction}
+                    theme={theme}
+                    onIframeClick={handleMainClick}
+                    iframeRef={iframeRefs}
+                  />
+                ))
+              ) : (
+                <EmptyStateDevice 
+                  url={url} 
+                  onUrlChange={handleUrlChange} 
+                  onAddRandomDevice={addIPhone12Pro}
+                />
+              )}
+            </div>
+          </main>
+        </div>
       </div>
-    </div>
+    </LanguageProvider>
   );
 };
 
