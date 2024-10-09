@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
 
 const LanguageContext = createContext();
 
@@ -47,6 +47,15 @@ const translations = {
 
 export const LanguageProvider = ({ children }) => {
   const [language, setLanguage] = useState('es');
+
+  useEffect(() => {
+    const detectLanguage = () => {
+      const browserLang = navigator.language.split('-')[0];
+      return translations[browserLang] ? browserLang : 'es';
+    };
+
+    setLanguage(detectLanguage());
+  }, []);
 
   const changeLanguage = (lang) => {
     setLanguage(lang);
