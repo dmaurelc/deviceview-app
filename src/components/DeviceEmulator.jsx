@@ -1,12 +1,22 @@
 import React, { useEffect, useRef } from 'react';
-import { X, RotateCcw } from 'lucide-react';
+import { X, RotateCcw, Download } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import TemporaryUrlPlaceholder from './TemporaryUrlPlaceholder';
+import { toPng, toJpeg, toWebp } from 'html-to-image';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useToast } from "@/components/ui/use-toast";
 
 const DeviceEmulator = ({ url, device, onRemove, syncAction, theme, onIframeClick, iframeRef }) => {
   const [isRotated, setIsRotated] = React.useState(false);
   const [isValidUrl, setIsValidUrl] = React.useState(true);
   const localIframeRef = useRef(null);
+  const deviceRef = useRef(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     const iframe = localIframeRef.current;
@@ -48,6 +58,45 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction, theme, onIframeClic
     setIsRotated(!isRotated);
   };
 
+  const downloadImage = async (format) => {
+    if (!deviceRef.current) return;
+
+    try {
+      let imageData;
+      const fileName = `${device.name}-screenshot.${format}`;
+
+      switch (format) {
+        case 'png':
+          imageData = await toPng(deviceRef.current);
+          break;
+        case 'jpeg':
+          imageData = await toJpeg(deviceRef.current);
+          break;
+        case 'webp':
+          imageData = await toWebp(deviceRef.current);
+          break;
+        default:
+          return;
+      }
+
+      const link = document.createElement('a');
+      link.download = fileName;
+      link.href = imageData;
+      link.click();
+
+      toast({
+        title: "Captura guardada",
+        description: `La captura se ha guardado como ${fileName}`,
+      });
+    } catch (err) {
+      toast({
+        title: "Error al guardar la captura",
+        description: "No se pudo guardar la captura de pantalla",
+        variant: "destructive",
+      });
+    }
+  };
+
   const deviceWidth = isRotated ? device.height : device.width;
   const deviceHeight = isRotated ? device.width : device.height;
 
@@ -70,7 +119,7 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction, theme, onIframeClic
           <span className="font-outfit">{deviceWidth}x{deviceHeight}</span>
         </div>
       </div>
-      <div className="flex flex-col bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden flex-shrink-0 snap-center" style={{ width: `${deviceWidth}px` }}>
+      <div ref={deviceRef} className="flex flex-col bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden flex-shrink-0 snap-center" style={{ width: `${deviceWidth}px` }}>
         <div className="bg-gray-100 dark:bg-gray-700 h-7 flex items-center justify-between px-2 text-xs font-medium">
           <div className="flex items-center space-x-1.5">
             <div className="w-2.5 h-2.5 rounded-full bg-red-500"></div>
@@ -79,6 +128,24 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction, theme, onIframeClic
           </div>
           <span className="truncate max-w-[150px] font-outfit">{url}</span>
           <div className="flex items-center space-x-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="h-5 w-5 p-0 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+                  <Download size={14} />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem onClick={() => downloadImage('png')}>
+                  Descargar PNG
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => downloadImage('jpeg')}>
+                  Descargar JPEG
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => downloadImage('webp')}>
+                  Descargar WEBP
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             {canRotate && (
               <Button variant="ghost" size="icon" className="h-5 w-5 p-0 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200" onClick={handleRotate}>
                 <RotateCcw size={14} />
