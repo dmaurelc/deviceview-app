@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { X, RotateCcw, Download } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import TemporaryUrlPlaceholder from './TemporaryUrlPlaceholder';
-import { toPng, toJpeg, toWebp } from 'html-to-image';
+import { toPng, toJpeg } from 'html-to-image';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -72,9 +72,6 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction, theme, onIframeClic
         case 'jpeg':
           imageData = await toJpeg(deviceRef.current);
           break;
-        case 'webp':
-          imageData = await toWebp(deviceRef.current);
-          break;
         default:
           return;
       }
@@ -140,9 +137,6 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction, theme, onIframeClic
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => downloadImage('jpeg')}>
                   Descargar JPEG
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => downloadImage('webp')}>
-                  Descargar WEBP
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
