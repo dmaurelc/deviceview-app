@@ -63,12 +63,30 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction, theme, onIframeClic
     try {
       const iframe = localIframeRef.current;
       const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
-      const element = iframeDocument.documentElement;
+      const element = iframeDocument.body;
+
+      // Esperar a que las imágenes se carguen
+      const images = element.getElementsByTagName('img');
+      await Promise.all(Array.from(images).map(img => {
+        if (img.complete) return Promise.resolve();
+        return new Promise((resolve, reject) => {
+          img.addEventListener('load', resolve);
+          img.addEventListener('error', reject);
+        });
+      }));
 
       let dataUrl;
       const options = {
         quality: 0.95,
-        backgroundColor: '#fff'
+        backgroundColor: '#fff',
+        width: element.scrollWidth,
+        height: element.scrollHeight,
+        style: {
+          transform: 'scale(1)',
+          transformOrigin: 'top left',
+          width: `${element.scrollWidth}px`,
+          height: `${element.scrollHeight}px`,
+        },
       };
 
       if (format === 'png') {
@@ -89,7 +107,7 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction, theme, onIframeClic
         description: `La captura se ha guardado como ${device.name}-screenshot.${format}`,
       });
     } catch (err) {
-      console.error(err);
+      console.error('Error al capturar:', err);
       toast({
         title: "Error al guardar la captura",
         description: "No se pudo guardar la captura de pantalla",
