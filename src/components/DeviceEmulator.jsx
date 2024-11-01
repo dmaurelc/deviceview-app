@@ -15,7 +15,6 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction, theme, onIframeClic
   const [isRotated, setIsRotated] = React.useState(false);
   const [isValidUrl, setIsValidUrl] = React.useState(true);
   const localIframeRef = useRef(null);
-  const deviceRef = useRef(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -59,18 +58,22 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction, theme, onIframeClic
   };
 
   const downloadImage = async (format) => {
-    if (!deviceRef.current) return;
+    if (!localIframeRef.current) return;
 
     try {
+      const iframe = localIframeRef.current;
+      const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+      const iframeContent = iframeDocument.documentElement;
+      
       let imageData;
       const fileName = `${device.name}-screenshot.${format}`;
 
       switch (format) {
         case 'png':
-          imageData = await toPng(deviceRef.current);
+          imageData = await toPng(iframeContent);
           break;
         case 'jpeg':
-          imageData = await toJpeg(deviceRef.current);
+          imageData = await toJpeg(iframeContent);
           break;
         default:
           return;
