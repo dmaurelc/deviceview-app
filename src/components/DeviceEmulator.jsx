@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { X, RotateCcw, Download } from 'lucide-react';
+import { X, Download } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import TemporaryUrlPlaceholder from './TemporaryUrlPlaceholder';
 import { toPng, toJpeg } from 'html-to-image';
@@ -63,32 +63,33 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction, theme, onIframeClic
     try {
       const iframe = localIframeRef.current;
       const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
-      const iframeContent = iframeDocument.documentElement;
-      
-      let imageData;
-      const fileName = `${device.name}-screenshot.${format}`;
+      const element = iframeDocument.documentElement;
 
-      switch (format) {
-        case 'png':
-          imageData = await toPng(iframeContent);
-          break;
-        case 'jpeg':
-          imageData = await toJpeg(iframeContent);
-          break;
-        default:
-          return;
+      let dataUrl;
+      const options = {
+        quality: 0.95,
+        backgroundColor: '#fff'
+      };
+
+      if (format === 'png') {
+        dataUrl = await toPng(element, options);
+      } else {
+        dataUrl = await toJpeg(element, options);
       }
 
       const link = document.createElement('a');
-      link.download = fileName;
-      link.href = imageData;
+      link.download = `${device.name}-screenshot.${format}`;
+      link.href = dataUrl;
+      document.body.appendChild(link);
       link.click();
+      document.body.removeChild(link);
 
       toast({
         title: "Captura guardada",
-        description: `La captura se ha guardado como ${fileName}`,
+        description: `La captura se ha guardado como ${device.name}-screenshot.${format}`,
       });
     } catch (err) {
+      console.error(err);
       toast({
         title: "Error al guardar la captura",
         description: "No se pudo guardar la captura de pantalla",
@@ -110,6 +111,21 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction, theme, onIframeClic
       return false;
     }
   };
+
+  const RotateIcon = () => (
+    <svg 
+      xmlns="http://www.w3.org/2000/svg" 
+      width="14" 
+      height="14" 
+      viewBox="0 0 256 256"
+      className="text-current"
+    >
+      <path 
+        fill="currentColor" 
+        d="m205.66 221.66l-24 24a8 8 0 0 1-11.32-11.32L180.69 224H80a24 24 0 0 1-24-24v-96a8 8 0 0 1 16 0v96a8 8 0 0 0 8 8h100.69l-10.35-10.34a8 8 0 0 1 11.32-11.32l24 24a8 8 0 0 1 0 11.32M80 72a8 8 0 0 0 5.66-13.66L75.31 48H176a8 8 0 0 1 8 8v96a8 8 0 0 0 16 0V56a24 24 0 0 0-24-24H75.31l10.35-10.34a8 8 0 1 0-11.32-11.32l-24 24a8 8 0 0 0 0 11.32l24 24A8 8 0 0 0 80 72"
+      />
+    </svg>
+  );
 
   return (
     <div className="flex flex-col gap-2 flex-shrink-0">
@@ -145,7 +161,7 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction, theme, onIframeClic
             </DropdownMenu>
             {canRotate && (
               <Button variant="ghost" size="icon" className="h-5 w-5 p-0 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200" onClick={handleRotate}>
-                <RotateCcw size={14} />
+                <RotateIcon />
               </Button>
             )}
             <Button variant="ghost" size="icon" className="h-5 w-5 p-0 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200" onClick={() => onRemove(device)}>
