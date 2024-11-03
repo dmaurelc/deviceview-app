@@ -54,14 +54,30 @@
     }
     currentTheme = theme;
 
-    // Forzar la actualización del tema en el contenido del iframe
     const meta = document.createElement('meta');
     meta.name = 'color-scheme';
     meta.content = theme;
     document.head.appendChild(meta);
 
-    // Disparar un evento personalizado para notificar el cambio de tema
     window.dispatchEvent(new CustomEvent('themechange', { detail: { theme } }));
+  }
+
+  function captureContent() {
+    const content = document.documentElement.outerHTML;
+    const styles = Array.from(document.styleSheets).map(sheet => {
+      try {
+        return Array.from(sheet.cssRules).map(rule => rule.cssText).join('\n');
+      } catch (e) {
+        return '';
+      }
+    }).join('\n');
+
+    return {
+      content,
+      styles,
+      width: document.documentElement.scrollWidth,
+      height: document.documentElement.scrollHeight
+    };
   }
 
   window.addEventListener('message', function(event) {
@@ -80,6 +96,12 @@
       }
     } else if (event.data.type === 'THEME_CHANGE') {
       applyTheme(event.data.theme);
+    } else if (event.data.type === 'CAPTURE_CONTENT') {
+      const captured = captureContent();
+      window.parent.postMessage({
+        type: 'CAPTURED_CONTENT',
+        payload: captured
+      }, '*');
     }
   });
 })();
