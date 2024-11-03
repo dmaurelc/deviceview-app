@@ -167,23 +167,24 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction, theme, onIframeClic
             </Button>
           </div>
         </div>
-      <div style={{ height: `${deviceHeight}px`, width: `${deviceWidth}px`, overflow: 'hidden' }} onClick={onIframeClick}>
-        {isValidURL(url) && isValidUrl ? (
-          <iframe
-            ref={(el) => {
-              localIframeRef.current = el;
-              if (iframeRef) {
-                iframeRef.current[device.name] = el;
-              }
-            }}
-            src={url}
-            title={`Preview on ${device.name}`}
-            className="w-full h-full border-0"
-            style={{ width: '100%', height: '100%' }}
-          />
-        ) : (
-          <TemporaryUrlPlaceholder />
-        )}
+        <div style={{ height: `${deviceHeight}px`, width: `${deviceWidth}px`, overflow: 'hidden' }} onClick={onIframeClick}>
+          {isValidURL(url) && isValidUrl ? (
+            <iframe
+              ref={(el) => {
+                localIframeRef.current = el;
+                if (iframeRef) {
+                  iframeRef.current[device.name] = el;
+                }
+              }}
+              src={url}
+              title={`Preview on ${device.name}`}
+              className="w-full h-full border-0"
+              style={{ width: '100%', height: '100%' }}
+            />
+          ) : (
+            <TemporaryUrlPlaceholder />
+          )}
+        </div>
       </div>
     </div>
   );
