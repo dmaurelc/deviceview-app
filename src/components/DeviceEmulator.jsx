@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { X, Download } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import TemporaryUrlPlaceholder from './TemporaryUrlPlaceholder';
-import { toPng, toJpeg } from 'html-to-image';
+import { captureIframeContent } from '../utils/screenshotUtils';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -53,48 +53,19 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction, theme, onIframeClic
     }
   }, [theme]);
 
-  const handleRotate = () => {
-    setIsRotated(!isRotated);
-  };
-
   const downloadImage = async (format) => {
-    if (!localIframeRef.current) return;
+    if (!localIframeRef.current) {
+      toast({
+        title: "Error",
+        description: "No se pudo acceder al contenido para capturar",
+        variant: "destructive",
+      });
+      return;
+    }
 
     try {
-      const iframe = localIframeRef.current;
-      const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
-      const element = iframeDocument.body;
-
-      // Esperar a que las imágenes se carguen
-      const images = element.getElementsByTagName('img');
-      await Promise.all(Array.from(images).map(img => {
-        if (img.complete) return Promise.resolve();
-        return new Promise((resolve, reject) => {
-          img.addEventListener('load', resolve);
-          img.addEventListener('error', reject);
-        });
-      }));
-
-      let dataUrl;
-      const options = {
-        quality: 0.95,
-        backgroundColor: '#fff',
-        width: element.scrollWidth,
-        height: element.scrollHeight,
-        style: {
-          transform: 'scale(1)',
-          transformOrigin: 'top left',
-          width: `${element.scrollWidth}px`,
-          height: `${element.scrollHeight}px`,
-        },
-      };
-
-      if (format === 'png') {
-        dataUrl = await toPng(element, options);
-      } else {
-        dataUrl = await toJpeg(element, options);
-      }
-
+      const dataUrl = await captureIframeContent(localIframeRef.current, format);
+      
       const link = document.createElement('a');
       link.download = `${device.name}-screenshot.${format}`;
       link.href = dataUrl;
@@ -110,10 +81,14 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction, theme, onIframeClic
       console.error('Error al capturar:', err);
       toast({
         title: "Error al guardar la captura",
-        description: "No se pudo guardar la captura de pantalla",
+        description: err.message || "No se pudo guardar la captura de pantalla",
         variant: "destructive",
       });
     }
+  };
+
+  const handleRotate = () => {
+    setIsRotated(!isRotated);
   };
 
   const deviceWidth = isRotated ? device.height : device.width;
