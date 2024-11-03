@@ -1,21 +1,12 @@
 import React, { useEffect, useRef } from 'react';
-import { X, Download } from 'lucide-react';
+import { X } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import TemporaryUrlPlaceholder from './TemporaryUrlPlaceholder';
-import { captureIframeContent } from '../utils/screenshotUtils';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { useToast } from "@/components/ui/use-toast";
 
 const DeviceEmulator = ({ url, device, onRemove, syncAction, theme, onIframeClick, iframeRef }) => {
   const [isRotated, setIsRotated] = React.useState(false);
   const [isValidUrl, setIsValidUrl] = React.useState(true);
   const localIframeRef = useRef(null);
-  const { toast } = useToast();
 
   useEffect(() => {
     const iframe = localIframeRef.current;
@@ -52,45 +43,6 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction, theme, onIframeClic
       localIframeRef.current.contentWindow.postMessage({ type: 'THEME_CHANGE', theme }, '*');
     }
   }, [theme]);
-
-  const downloadImage = async (format) => {
-    if (!localIframeRef.current) {
-      toast({
-        title: "Error",
-        description: "No se pudo acceder al contenido para capturar",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    toast({
-      title: "Capturando pantalla",
-      description: "Por favor espere mientras se procesa la captura...",
-    });
-
-    try {
-      const dataUrl = await captureIframeContent(localIframeRef.current, format);
-      
-      const link = document.createElement('a');
-      link.download = `${device.name}-screenshot.${format}`;
-      link.href = dataUrl;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-
-      toast({
-        title: "Captura guardada",
-        description: `La captura se ha guardado como ${device.name}-screenshot.${format}`,
-      });
-    } catch (err) {
-      console.error('Error al capturar:', err);
-      toast({
-        title: "Error al guardar la captura",
-        description: err.message || "No se pudo guardar la captura de pantalla",
-        variant: "destructive",
-      });
-    }
-  };
 
   const handleRotate = () => {
     setIsRotated(!isRotated);
@@ -142,21 +94,6 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction, theme, onIframeClic
           </div>
           <span className="truncate max-w-[150px] font-outfit">{url}</span>
           <div className="flex items-center space-x-2">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-5 w-5 p-0 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
-                  <Download size={14} />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem onClick={() => downloadImage('png')}>
-                  Descargar PNG
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => downloadImage('jpeg')}>
-                  Descargar JPEG
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
             {canRotate && (
               <Button variant="ghost" size="icon" className="h-5 w-5 p-0 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200" onClick={handleRotate}>
                 <RotateIcon />
