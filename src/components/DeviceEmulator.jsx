@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { X, RefreshCw, Camera, ChevronDown } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { captureVisibleScreen, captureFullScreen, downloadImage } from '@/utils/screenshotUtils';
 import { downloadFromStorage } from '@/utils/captureManager';
 import TemporaryUrlPlaceholder from './TemporaryUrlPlaceholder';
