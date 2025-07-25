@@ -62,15 +62,34 @@
     window.dispatchEvent(new CustomEvent('themechange', { detail: { theme } }));
   }
 
-  function captureContent() {
-    const content = document.documentElement.outerHTML;
-    const styles = Array.from(document.styleSheets).map(sheet => {
+  function extractStyles() {
+    let styles = '';
+    
+    // Extract external stylesheets with CORS handling
+    const externalStyles = Array.from(document.styleSheets).map(sheet => {
       try {
+        if (sheet.href && !sheet.href.startsWith(window.location.origin)) {
+          // Skip cross-origin stylesheets that can't be accessed
+          return `/* Cross-origin stylesheet: ${sheet.href} */`;
+        }
         return Array.from(sheet.cssRules).map(rule => rule.cssText).join('\n');
       } catch (e) {
-        return '';
+        // Fallback for CORS issues
+        return `/* Stylesheet access blocked: ${sheet.href || 'inline'} */`;
       }
     }).join('\n');
+
+    // Extract inline styles
+    const inlineStyles = Array.from(document.querySelectorAll('style')).map(
+      style => style.textContent
+    ).join('\n');
+
+    return externalStyles + '\n' + inlineStyles;
+  }
+
+  function captureContent() {
+    const content = document.documentElement.outerHTML;
+    const styles = extractStyles();
 
     return {
       content,
@@ -82,13 +101,7 @@
 
   function captureVisibleArea() {
     const content = document.documentElement.outerHTML;
-    const styles = Array.from(document.styleSheets).map(sheet => {
-      try {
-        return Array.from(sheet.cssRules).map(rule => rule.cssText).join('\n');
-      } catch (e) {
-        return '';
-      }
-    }).join('\n');
+    const styles = extractStyles();
 
     return {
       content,
@@ -107,14 +120,11 @@
     // Scroll to top-left
     window.scrollTo(0, 0);
     
+    // Wait for scroll to complete
+    await new Promise(resolve => setTimeout(resolve, 200));
+    
     const content = document.documentElement.outerHTML;
-    const styles = Array.from(document.styleSheets).map(sheet => {
-      try {
-        return Array.from(sheet.cssRules).map(rule => rule.cssText).join('\n');
-      } catch (e) {
-        return '';
-      }
-    }).join('\n');
+    const styles = extractStyles();
 
     const result = {
       content,

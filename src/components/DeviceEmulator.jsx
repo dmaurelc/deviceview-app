@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/components/ui/use-toast";
 import { captureVisibleScreen, captureFullScreen, downloadImage } from '@/utils/screenshotUtils';
+import { downloadFromStorage } from '@/utils/captureManager';
 import TemporaryUrlPlaceholder from './TemporaryUrlPlaceholder';
 
 const DeviceEmulator = ({ url, device, onRemove, syncAction, theme, onIframeClick, iframeRef }) => {
@@ -66,28 +67,51 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction, theme, onIframeClic
     
     try {
       toast({
-        title: type === 'visible' ? 'Capturando pantalla visible...' : 'Capturando página completa...',
-        description: 'Por favor espera mientras se procesa la captura.'
+        title: type === 'visible' ? 'Iniciando captura visible...' : 'Iniciando captura completa...',
+        description: 'Preparando la captura de pantalla...'
       });
 
       const captureFunction = type === 'visible' ? captureVisibleScreen : captureFullScreen;
-      const dataUrl = await captureFunction(localIframeRef.current, format);
+      
+      // Show processing message for longer captures
+      const processingToast = setTimeout(() => {
+        toast({
+          title: 'Procesando captura...',
+          description: 'Esto puede tomar unos segundos para páginas grandes.'
+        });
+      }, 2000);
+
+      const result = await captureFunction(localIframeRef.current, format);
+      clearTimeout(processingToast);
       
       const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
       const filename = `${device.name.toLowerCase().replace(/\s+/g, '-')}-${type}-${timestamp}.${format}`;
       
-      downloadImage(dataUrl, filename);
+      // Download from temporary storage
+      await downloadFromStorage(result.captureId, filename);
       
       toast({
         title: '¡Captura completada!',
-        description: `Screenshot guardado como ${filename}`
+        description: `Screenshot descargado como ${filename}`,
+        duration: 3000
       });
     } catch (error) {
       console.error('Error al capturar screenshot:', error);
+      
+      let errorMessage = 'No se pudo completar la captura de pantalla.';
+      if (error.message.includes('CORS')) {
+        errorMessage = 'Error de CORS. La página tiene restricciones de seguridad.';
+      } else if (error.message.includes('timeout') || error.message.includes('Tiempo de espera')) {
+        errorMessage = 'La captura tardó demasiado. Intenta con una página más pequeña.';
+      } else if (error.message.includes('comunicar')) {
+        errorMessage = 'No se pudo acceder al contenido de la página.';
+      }
+      
       toast({
         title: 'Error en la captura',
-        description: 'No se pudo completar la captura de pantalla.',
-        variant: 'destructive'
+        description: errorMessage,
+        variant: 'destructive',
+        duration: 5000
       });
     } finally {
       setIsCapturing(false);
