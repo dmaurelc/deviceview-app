@@ -1,12 +1,17 @@
-import React, { useEffect, useRef } from 'react';
-import { X, RefreshCw } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
+import { X, RefreshCw, Camera, ChevronDown } from 'lucide-react';
 import { Button } from "@/components/ui/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { useToast } from "@/components/ui/use-toast";
+import { captureVisibleScreen, captureFullScreen, downloadImage } from '@/utils/screenshotUtils';
 import TemporaryUrlPlaceholder from './TemporaryUrlPlaceholder';
 
 const DeviceEmulator = ({ url, device, onRemove, syncAction, theme, onIframeClick, iframeRef }) => {
-  const [isRotated, setIsRotated] = React.useState(false);
-  const [isValidUrl, setIsValidUrl] = React.useState(true);
+  const [isRotated, setIsRotated] = useState(false);
+  const [isValidUrl, setIsValidUrl] = useState(true);
+  const [isCapturing, setIsCapturing] = useState(false);
   const localIframeRef = useRef(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     const iframe = localIframeRef.current;
@@ -51,6 +56,41 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction, theme, onIframeClic
   const handleRefresh = () => {
     if (localIframeRef.current) {
       localIframeRef.current.src = localIframeRef.current.src;
+    }
+  };
+
+  const handleScreenshot = async (type, format) => {
+    if (!localIframeRef.current || isCapturing) return;
+
+    setIsCapturing(true);
+    
+    try {
+      toast({
+        title: type === 'visible' ? 'Capturando pantalla visible...' : 'Capturando página completa...',
+        description: 'Por favor espera mientras se procesa la captura.'
+      });
+
+      const captureFunction = type === 'visible' ? captureVisibleScreen : captureFullScreen;
+      const dataUrl = await captureFunction(localIframeRef.current, format);
+      
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
+      const filename = `${device.name.toLowerCase().replace(/\s+/g, '-')}-${type}-${timestamp}.${format}`;
+      
+      downloadImage(dataUrl, filename);
+      
+      toast({
+        title: '¡Captura completada!',
+        description: `Screenshot guardado como ${filename}`
+      });
+    } catch (error) {
+      console.error('Error al capturar screenshot:', error);
+      toast({
+        title: 'Error en la captura',
+        description: 'No se pudo completar la captura de pantalla.',
+        variant: 'destructive'
+      });
+    } finally {
+      setIsCapturing(false);
     }
   };
 
@@ -105,6 +145,54 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction, theme, onIframeClic
                 <RotateIcon />
               </Button>
             )}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="h-5 w-5 p-0 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                  disabled={isCapturing}
+                >
+                  <Camera size={14} />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuSub>
+                  <DropdownMenuSubTrigger className="text-xs">
+                    <Camera className="mr-2 h-3 w-3" />
+                    Captura visible
+                  </DropdownMenuSubTrigger>
+                  <DropdownMenuSubContent>
+                    <DropdownMenuItem onClick={() => handleScreenshot('visible', 'png')} className="text-xs">
+                      PNG
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleScreenshot('visible', 'jpeg')} className="text-xs">
+                      JPEG
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleScreenshot('visible', 'webp')} className="text-xs">
+                      WebP
+                    </DropdownMenuItem>
+                  </DropdownMenuSubContent>
+                </DropdownMenuSub>
+                <DropdownMenuSub>
+                  <DropdownMenuSubTrigger className="text-xs">
+                    <Camera className="mr-2 h-3 w-3" />
+                    Captura completa
+                  </DropdownMenuSubTrigger>
+                  <DropdownMenuSubContent>
+                    <DropdownMenuItem onClick={() => handleScreenshot('full', 'png')} className="text-xs">
+                      PNG
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleScreenshot('full', 'jpeg')} className="text-xs">
+                      JPEG
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleScreenshot('full', 'webp')} className="text-xs">
+                      WebP
+                    </DropdownMenuItem>
+                  </DropdownMenuSubContent>
+                </DropdownMenuSub>
+              </DropdownMenuContent>
+            </DropdownMenu>
             <Button variant="ghost" size="icon" className="h-5 w-5 p-0 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200" onClick={handleRefresh}>
               <RefreshCw size={14} />
             </Button>

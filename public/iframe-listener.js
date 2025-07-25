@@ -80,6 +80,57 @@
     };
   }
 
+  function captureVisibleArea() {
+    const content = document.documentElement.outerHTML;
+    const styles = Array.from(document.styleSheets).map(sheet => {
+      try {
+        return Array.from(sheet.cssRules).map(rule => rule.cssText).join('\n');
+      } catch (e) {
+        return '';
+      }
+    }).join('\n');
+
+    return {
+      content,
+      styles,
+      width: window.innerWidth,
+      height: window.innerHeight,
+      scrollX: window.scrollX,
+      scrollY: window.scrollY
+    };
+  }
+
+  async function captureFullPage() {
+    const originalScrollX = window.scrollX;
+    const originalScrollY = window.scrollY;
+    
+    // Scroll to top-left
+    window.scrollTo(0, 0);
+    
+    const content = document.documentElement.outerHTML;
+    const styles = Array.from(document.styleSheets).map(sheet => {
+      try {
+        return Array.from(sheet.cssRules).map(rule => rule.cssText).join('\n');
+      } catch (e) {
+        return '';
+      }
+    }).join('\n');
+
+    const result = {
+      content,
+      styles,
+      width: document.documentElement.scrollWidth,
+      height: document.documentElement.scrollHeight,
+      viewportWidth: window.innerWidth,
+      viewportHeight: window.innerHeight
+    };
+
+    // Restore original scroll position
+    window.scrollTo(originalScrollX, originalScrollY);
+    
+    return result;
+  }
+
   window.addEventListener('message', function(event) {
     if (event.data.type === 'INIT_LISTENERS') {
       window.addEventListener('scroll', throttle(handleScroll, 100));
@@ -102,6 +153,19 @@
         type: 'CAPTURED_CONTENT',
         payload: captured
       }, '*');
+    } else if (event.data.type === 'CAPTURE_VISIBLE') {
+      const captured = captureVisibleArea();
+      window.parent.postMessage({
+        type: 'CAPTURED_VISIBLE',
+        payload: captured
+      }, '*');
+    } else if (event.data.type === 'CAPTURE_FULL_PAGE') {
+      captureFullPage().then(captured => {
+        window.parent.postMessage({
+          type: 'CAPTURED_FULL_PAGE',
+          payload: captured
+        }, '*');
+      });
     }
   });
 })();
