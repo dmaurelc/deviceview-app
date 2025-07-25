@@ -1,5 +1,5 @@
 import React from "react";
-import { Moon, Sun, Laptop, Menu, Globe } from "lucide-react";
+import { Moon, Sun, Laptop, Menu, Globe, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Logo from "./Logo";
 import { Input } from "@/components/ui/input";
@@ -19,7 +19,8 @@ const Header = ({
   onUrlChange,
   toggleSidebar,
   isMobile,
-  hasSelectedDevices
+  hasSelectedDevices,
+  onRefreshAll
 }) => {
   const { language, changeLanguage, t } = useLanguage();
 
@@ -87,6 +88,16 @@ const Header = ({
                   className="w-64 font-outfit"
                 />
               </div>
+            )}
+            {hasSelectedDevices && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={onRefreshAll}
+                aria-label="Refresh all devices"
+              >
+                <RefreshCw className="h-5 w-5" />
+              </Button>
             )}
             <Button
               variant="ghost"

@@ -82,6 +82,15 @@ const Index = () => {
     }
   }, [isMobile, isSidebarOpen]);
 
+  const handleRefreshAll = useCallback(() => {
+    selectedDevices.forEach(device => {
+      if (iframeRefs.current[device.name]) {
+        const iframe = iframeRefs.current[device.name];
+        iframe.src = iframe.src;
+      }
+    });
+  }, [selectedDevices, iframeRefs]);
+
   const translations = {
     es: {
       startPreview: "Comienza tu previsualización",
@@ -106,6 +115,7 @@ const Index = () => {
           toggleSidebar={toggleSidebar}
           isMobile={isMobile}
           hasSelectedDevices={selectedDevices.length > 0}
+          onRefreshAll={handleRefreshAll}
         />
       </div>
       <div className="flex flex-1 overflow-hidden relative z-10">

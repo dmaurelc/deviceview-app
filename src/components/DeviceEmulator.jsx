@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { X } from 'lucide-react';
+import { X, RefreshCw } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import TemporaryUrlPlaceholder from './TemporaryUrlPlaceholder';
 
@@ -46,6 +46,12 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction, theme, onIframeClic
 
   const handleRotate = () => {
     setIsRotated(!isRotated);
+  };
+
+  const handleRefresh = () => {
+    if (localIframeRef.current) {
+      localIframeRef.current.src = localIframeRef.current.src;
+    }
   };
 
   const deviceWidth = isRotated ? device.height : device.width;
@@ -99,6 +105,9 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction, theme, onIframeClic
                 <RotateIcon />
               </Button>
             )}
+            <Button variant="ghost" size="icon" className="h-5 w-5 p-0 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200" onClick={handleRefresh}>
+              <RefreshCw size={14} />
+            </Button>
             <Button variant="ghost" size="icon" className="h-5 w-5 p-0 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200" onClick={() => onRemove(device)}>
               <X size={14} />
             </Button>
