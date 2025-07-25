@@ -1,18 +1,12 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { X, RefreshCw, Camera, ChevronDown } from 'lucide-react';
+import React, { useEffect, useRef } from 'react';
+import { X, RefreshCw } from 'lucide-react';
 import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { useToast } from "@/hooks/use-toast";
-import { captureVisibleScreen, captureFullScreen, downloadImage } from '@/utils/screenshotUtils';
-import { downloadFromStorage } from '@/utils/captureManager';
 import TemporaryUrlPlaceholder from './TemporaryUrlPlaceholder';
 
 const DeviceEmulator = ({ url, device, onRemove, syncAction, theme, onIframeClick, iframeRef }) => {
-  const [isRotated, setIsRotated] = useState(false);
-  const [isValidUrl, setIsValidUrl] = useState(true);
-  const [isCapturing, setIsCapturing] = useState(false);
+  const [isRotated, setIsRotated] = React.useState(false);
+  const [isValidUrl, setIsValidUrl] = React.useState(true);
   const localIframeRef = useRef(null);
-  const { toast } = useToast();
 
   useEffect(() => {
     const iframe = localIframeRef.current;
@@ -57,64 +51,6 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction, theme, onIframeClic
   const handleRefresh = () => {
     if (localIframeRef.current) {
       localIframeRef.current.src = localIframeRef.current.src;
-    }
-  };
-
-  const handleScreenshot = async (type, format) => {
-    if (!localIframeRef.current || isCapturing) return;
-
-    setIsCapturing(true);
-    
-    try {
-      toast({
-        title: type === 'visible' ? 'Iniciando captura visible...' : 'Iniciando captura completa...',
-        description: 'Preparando la captura de pantalla...'
-      });
-
-      const captureFunction = type === 'visible' ? captureVisibleScreen : captureFullScreen;
-      
-      // Show processing message for longer captures
-      const processingToast = setTimeout(() => {
-        toast({
-          title: 'Procesando captura...',
-          description: 'Esto puede tomar unos segundos para páginas grandes.'
-        });
-      }, 2000);
-
-      const result = await captureFunction(localIframeRef.current, format);
-      clearTimeout(processingToast);
-      
-      const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
-      const filename = `${device.name.toLowerCase().replace(/\s+/g, '-')}-${type}-${timestamp}.${format}`;
-      
-      // Download from temporary storage
-      await downloadFromStorage(result.captureId, filename);
-      
-      toast({
-        title: '¡Captura completada!',
-        description: `Screenshot descargado como ${filename}`,
-        duration: 3000
-      });
-    } catch (error) {
-      console.error('Error al capturar screenshot:', error);
-      
-      let errorMessage = 'No se pudo completar la captura de pantalla.';
-      if (error.message.includes('CORS')) {
-        errorMessage = 'Error de CORS. La página tiene restricciones de seguridad.';
-      } else if (error.message.includes('timeout') || error.message.includes('Tiempo de espera')) {
-        errorMessage = 'La captura tardó demasiado. Intenta con una página más pequeña.';
-      } else if (error.message.includes('comunicar')) {
-        errorMessage = 'No se pudo acceder al contenido de la página.';
-      }
-      
-      toast({
-        title: 'Error en la captura',
-        description: errorMessage,
-        variant: 'destructive',
-        duration: 5000
-      });
-    } finally {
-      setIsCapturing(false);
     }
   };
 
@@ -169,54 +105,6 @@ const DeviceEmulator = ({ url, device, onRemove, syncAction, theme, onIframeClic
                 <RotateIcon />
               </Button>
             )}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="h-5 w-5 p-0 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-                  disabled={isCapturing}
-                >
-                  <Camera size={14} />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48">
-                <DropdownMenuSub>
-                  <DropdownMenuSubTrigger className="text-xs">
-                    <Camera className="mr-2 h-3 w-3" />
-                    Captura visible
-                  </DropdownMenuSubTrigger>
-                  <DropdownMenuSubContent>
-                    <DropdownMenuItem onClick={() => handleScreenshot('visible', 'png')} className="text-xs">
-                      PNG
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => handleScreenshot('visible', 'jpeg')} className="text-xs">
-                      JPEG
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => handleScreenshot('visible', 'webp')} className="text-xs">
-                      WebP
-                    </DropdownMenuItem>
-                  </DropdownMenuSubContent>
-                </DropdownMenuSub>
-                <DropdownMenuSub>
-                  <DropdownMenuSubTrigger className="text-xs">
-                    <Camera className="mr-2 h-3 w-3" />
-                    Captura completa
-                  </DropdownMenuSubTrigger>
-                  <DropdownMenuSubContent>
-                    <DropdownMenuItem onClick={() => handleScreenshot('full', 'png')} className="text-xs">
-                      PNG
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => handleScreenshot('full', 'jpeg')} className="text-xs">
-                      JPEG
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => handleScreenshot('full', 'webp')} className="text-xs">
-                      WebP
-                    </DropdownMenuItem>
-                  </DropdownMenuSubContent>
-                </DropdownMenuSub>
-              </DropdownMenuContent>
-            </DropdownMenu>
             <Button variant="ghost" size="icon" className="h-5 w-5 p-0 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200" onClick={handleRefresh}>
               <RefreshCw size={14} />
             </Button>

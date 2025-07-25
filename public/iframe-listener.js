@@ -62,34 +62,15 @@
     window.dispatchEvent(new CustomEvent('themechange', { detail: { theme } }));
   }
 
-  function extractStyles() {
-    let styles = '';
-    
-    // Extract external stylesheets with CORS handling
-    const externalStyles = Array.from(document.styleSheets).map(sheet => {
-      try {
-        if (sheet.href && !sheet.href.startsWith(window.location.origin)) {
-          // Skip cross-origin stylesheets that can't be accessed
-          return `/* Cross-origin stylesheet: ${sheet.href} */`;
-        }
-        return Array.from(sheet.cssRules).map(rule => rule.cssText).join('\n');
-      } catch (e) {
-        // Fallback for CORS issues
-        return `/* Stylesheet access blocked: ${sheet.href || 'inline'} */`;
-      }
-    }).join('\n');
-
-    // Extract inline styles
-    const inlineStyles = Array.from(document.querySelectorAll('style')).map(
-      style => style.textContent
-    ).join('\n');
-
-    return externalStyles + '\n' + inlineStyles;
-  }
-
   function captureContent() {
     const content = document.documentElement.outerHTML;
-    const styles = extractStyles();
+    const styles = Array.from(document.styleSheets).map(sheet => {
+      try {
+        return Array.from(sheet.cssRules).map(rule => rule.cssText).join('\n');
+      } catch (e) {
+        return '';
+      }
+    }).join('\n');
 
     return {
       content,
@@ -97,48 +78,6 @@
       width: document.documentElement.scrollWidth,
       height: document.documentElement.scrollHeight
     };
-  }
-
-  function captureVisibleArea() {
-    const content = document.documentElement.outerHTML;
-    const styles = extractStyles();
-
-    return {
-      content,
-      styles,
-      width: window.innerWidth,
-      height: window.innerHeight,
-      scrollX: window.scrollX,
-      scrollY: window.scrollY
-    };
-  }
-
-  async function captureFullPage() {
-    const originalScrollX = window.scrollX;
-    const originalScrollY = window.scrollY;
-    
-    // Scroll to top-left
-    window.scrollTo(0, 0);
-    
-    // Wait for scroll to complete
-    await new Promise(resolve => setTimeout(resolve, 200));
-    
-    const content = document.documentElement.outerHTML;
-    const styles = extractStyles();
-
-    const result = {
-      content,
-      styles,
-      width: document.documentElement.scrollWidth,
-      height: document.documentElement.scrollHeight,
-      viewportWidth: window.innerWidth,
-      viewportHeight: window.innerHeight
-    };
-
-    // Restore original scroll position
-    window.scrollTo(originalScrollX, originalScrollY);
-    
-    return result;
   }
 
   window.addEventListener('message', function(event) {
@@ -163,19 +102,6 @@
         type: 'CAPTURED_CONTENT',
         payload: captured
       }, '*');
-    } else if (event.data.type === 'CAPTURE_VISIBLE') {
-      const captured = captureVisibleArea();
-      window.parent.postMessage({
-        type: 'CAPTURED_VISIBLE',
-        payload: captured
-      }, '*');
-    } else if (event.data.type === 'CAPTURE_FULL_PAGE') {
-      captureFullPage().then(captured => {
-        window.parent.postMessage({
-          type: 'CAPTURED_FULL_PAGE',
-          payload: captured
-        }, '*');
-      });
     }
   });
 })();

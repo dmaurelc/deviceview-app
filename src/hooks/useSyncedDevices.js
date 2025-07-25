@@ -1,13 +1,13 @@
-import React from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 
 const useSyncedDevices = (selectedDevices) => {
-  const [syncedState, setSyncedState] = React.useState({
+  const [syncedState, setSyncedState] = useState({
     scroll: { x: 0, y: 0 },
     zoom: 1,
   });
-  const iframeRefs = React.useRef({});
+  const iframeRefs = useRef({});
 
-  const syncAction = React.useCallback((action, sourceDevice) => {
+  const syncAction = useCallback((action, sourceDevice) => {
     setSyncedState(prevState => ({ ...prevState, ...action }));
     selectedDevices.forEach(device => {
       if (device.name !== sourceDevice && iframeRefs.current[device.name]) {
@@ -19,7 +19,7 @@ const useSyncedDevices = (selectedDevices) => {
     });
   }, [selectedDevices]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const handleMessage = (event) => {
       if (event.data.type === 'DEVICE_ACTION') {
         syncAction(event.data.payload, event.data.sourceDevice);
